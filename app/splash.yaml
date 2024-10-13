@@ -1,0 +1,15 @@
+flutter_native_splash:
+  color: "#070707FF"
+  color_dark: "#272727"
+  image: assets/logos/LOGO_YAATAL.png
+  image_dark: assets/logos/LOGO_CORAN.png
+
+  android_12:   
+    color: "#090808FF"
+    color_dark: "#272727"
+    image: assets/logos/LOGO_YAATAL.png
+    image_dark: assets/logos/LOGO_CORAN.png
+
+  web: false
+  android: true
+  ios: true
