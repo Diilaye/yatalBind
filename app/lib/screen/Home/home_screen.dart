@@ -1,107 +1,74 @@
 import 'package:app/utils/colors.dart';
+import 'package:app/widgets/cart_widget.dart';
+import 'package:app/widgets/category_widget.dart';
+import 'package:app/widgets/slider_widget/home_image_slider.dart';
+import 'package:app/widgets/slider_widget/image_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '../../widgets/app_bar_widget/home_app_bar.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
+  int currentSlide = 0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       backgroundColor: yWhiteColor,
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(25.0),
+          padding: const EdgeInsets.all(20),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 30,),
+              //Pour la barre en haut
+              CustomAppBar(),
+              SizedBox(height: 20,),
+              //Pour la barre de recherche
+              SearchBar(),
+              SizedBox(height: 40,),
+              //Pour le Slider
+              HomeImageSlider(
+              currentSlide: currentSlide,
+              onChange: (value){
+                setState(() {
+                  currentSlide = value;
+                });
+              }),
+              const SizedBox(height: 20,),
+              //Pour les categories
+              CategoryWidget(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Row(
-                    
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'BIENVENUE', 
-                            style: TextStyle(
-                              color: yAccentColor,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text(
-                            '10 Oct, 2024',
-                            style: TextStyle(color: yAccentColor),
-                          )
-                        ],
-                      ),
-                      Icon(
-                        Icons.sign_language_outlined,
-                        color: yAccentColor,
-                      ),
-                    ],
-                  ),
-                  //NOTIFICATIONS
-                  Container(
-                    decoration: BoxDecoration(
-                      color: yDarkColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.all(12),
-                    // ignore: prefer_const_constructors
-                    child: Icon(
-                      Icons.message_outlined,
-                      color: yAccentColor,
-                    )
-                  )
-                ],
-              ),
-
-              const SizedBox(height: 25,),
-              //search button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(color: yAccentColor, borderRadius: BorderRadius.circular(12)),
-                    padding: const EdgeInsets.all(12),
-                    // ignore: prefer_const_constructors
-                    child: Row(
-                      children: const [
-                        Icon(
-                          Icons.search,
-                          color: yDarkColor,
-                          ),
-                          SizedBox(width: 8,),
-                        Text(
-                          'Rechercher',
-                          style: TextStyle(
-                            color: yWhiteColor
-                          ),
-                          ),
-                      ],
+                  Text(
+                    'Evenements Précédents',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w800
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(color: yAccentColor, borderRadius: BorderRadius.circular(12)),
-                    padding: const EdgeInsets.all(12),
-                    child: Icon(Icons.settings_input_composite_sharp, color: yDarkColor,),
+                  Text(
+                    "VOIR TOUT",
+                     style: TextStyle(
+                       fontFamily: 'Poppins',
+                       fontWeight: FontWeight.w500,
+                       fontSize: 16,
+                       color: yDarkColor
+                     ),
                   ),
                 ],
               ),
-
-              const SizedBox(height: 25,),
-              //SLIDER 
-
+              //pour l'affichage des concours précédents
+              Cart(),
             ],
           ),
         ),
@@ -109,3 +76,5 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+

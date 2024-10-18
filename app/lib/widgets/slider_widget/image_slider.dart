@@ -1,4 +1,6 @@
+import 'package:app/utils/data.dart';
 import 'package:app/utils/images_string.dart';
+import 'package:app/utils/images_viewer_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -7,9 +9,13 @@ class ImageSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    var height = size.height;
-    var width = size.width;
+    Size size;
+    double height, width;
+
+    size = MediaQuery.of(context).size;
+    height = size.height;
+    width = size.width;
+
     return Stack(
       children: [
         SizedBox.expand(
@@ -26,11 +32,25 @@ class ImageSlider extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: height * .25,
-                    width: width,
+                    height: 220,
+                    width: double.infinity,
                     child: Stack(
                       children: [
-                        CarouselSlider(items: ['slider1', 'slider2', 'slider3'], options: options)
+                        CarouselSlider(
+                            items: AppData.innerStyleImages.map((imagePath){
+                              return Builder(
+                                  builder: (BuildContext context){
+                                    return ImageViewerHelper.show(
+                                        context: context,
+                                        url: imagePath,
+                                    );
+                                  },
+                              );
+                            }).toList(),
+                            options: CarouselOptions(
+                              enlargeCenterPage: true,
+                            ),
+                        ),
                       ],
                     ),
                   )
