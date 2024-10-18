@@ -27,7 +27,6 @@ class _HomePageState extends State<HomePage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          
                           Text(
                             'BIENVENUE', 
                             style: TextStyle(
