@@ -1,0 +1,206 @@
+import 'package:app/utils/colors.dart';
+import 'package:app/utils/images_string.dart';
+import 'package:app/widgets/app_bar_widget/page_app_bar.dart';
+import 'package:app/widgets/concours/concours_info.dart';
+import 'package:flutter/material.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+
+class ConcoursScreen extends StatefulWidget {
+  const ConcoursScreen({super.key});
+
+  @override
+  State<ConcoursScreen> createState() => _ConcoursScreenState();
+}
+
+class _ConcoursScreenState extends State<ConcoursScreen> {
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
+    return  Scaffold(
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: size.height,
+          child: Stack(
+            children: [
+              Container(
+                height: size.height*0.55,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(welcomeScreen),
+                    fit: BoxFit.cover
+                  )
+                ),
+              ),
+              Positioned(
+                top: 50,
+                left: 20,
+                child: CircleAvatar(
+                  backgroundColor: Colors.black,
+                  child: InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: const Icon(
+                      Icons.arrow_back_ios_new,
+                      color: yWhiteColor,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+               bottom: 0,
+                child: Container(
+                  height: size.height * 0.5,
+                  width: size.width,
+                  decoration:  BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(80),
+                    ),
+                    color: Colors.white,
+                  ),
+                  child: Padding(
+                     padding: EdgeInsets.symmetric(horizontal: 20),
+                     child: Column(
+                       children: [
+                         SizedBox(height: 50,),
+                         Row(
+                           children: [
+
+                             SizedBox(width: 10,),
+                             Expanded(
+                                 child: Column(
+                                   crossAxisAlignment: CrossAxisAlignment.center,
+                                   children: [
+                                     Text(
+                                         "INFOS DU CONCOURS",
+                                       maxLines: 1,
+                                       style: TextStyle(height: 0, fontSize: 18, fontWeight: FontWeight.w800 , color: Colors.black),
+                                     ),
+                                   ],
+                                 )
+                             ),
+                           ],
+                         ),
+                         const SizedBox(height: 30,),
+                         Row(
+                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                           children: [
+                             new CircularPercentIndicator(
+                               radius: 50.0,
+                               animation: true,
+                               animationDuration: 1200,
+                               lineWidth: 12.0,
+                               percent: 0.9,
+                               center: new Text(
+                                 "+1000",
+                                 style:
+                                 new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                               ),
+                               circularStrokeCap: CircularStrokeCap.butt,
+                               backgroundColor: Colors.amberAccent,
+                               progressColor: yAccentColor,
+                             ),
+
+                             new CircularPercentIndicator(
+                               radius: 50.0,
+                               animation: true,
+                               animationDuration: 1200,
+                               lineWidth: 12.0,
+                               percent: 0.6,
+                               center: new Text(
+                                 "+500",
+                                 style:
+                                 new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                               ),
+                               circularStrokeCap: CircularStrokeCap.butt,
+                               backgroundColor: Colors.amberAccent,
+                               progressColor: yAccentColor,
+                             ),
+
+                             new CircularPercentIndicator(
+                               radius: 50.0,
+                               animation: true,
+                               animationDuration: 1200,
+                               lineWidth: 12.0,
+                               percent: 0.4,
+                               center: new Text(
+                                 "Filles",
+                                 style:
+                                 new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                               ),
+                               circularStrokeCap: CircularStrokeCap.butt,
+                               backgroundColor: Colors.amberAccent,
+                               progressColor: yAccentColor,
+                             ),
+                           ],
+                         ),
+                         SizedBox(height: 30,),
+                         Row(
+                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                           children: [
+                             Text(
+                               'INFORMATIONS',
+                               style: TextStyle(
+                                   fontSize: 25,
+                                   fontFamily: 'Poppins',
+                                   fontWeight: FontWeight.w800
+                               ),
+                             ),
+                             InkWell(
+                               onTap: (){
+                                 Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ConcoursScreen()));
+                               },
+                               child: Text(
+                                 "VOIR TOUT",
+                                 style: TextStyle(
+                                     fontFamily: 'Poppins',
+                                     fontWeight: FontWeight.w500,
+                                     fontSize: 16,
+                                     color: yDarkColor
+                                 ),
+                               ),
+                             ),
+                           ],
+                         ),
+                         ConcoursInfoWidget(),
+                         SizedBox(height: 30,),
+                         Row(
+                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                           children: [
+                             Text(
+                               'INFORMATIONS',
+                               style: TextStyle(
+                                   fontSize: 25,
+                                   fontFamily: 'Poppins',
+                                   fontWeight: FontWeight.w800
+                               ),
+                             ),
+                             InkWell(
+                               onTap: (){
+                                 Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ConcoursScreen()));
+                               },
+                               child: Text(
+                                 "VOIR TOUT",
+                                 style: TextStyle(
+                                     fontFamily: 'Poppins',
+                                     fontWeight: FontWeight.w500,
+                                     fontSize: 16,
+                                     color: yDarkColor
+                                 ),
+                               ),
+                             ),
+                           ],
+                         ),
+                         ConcoursInfoWidget()
+                       ],
+                     ),
+                  ),
+                ),
+              ),
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

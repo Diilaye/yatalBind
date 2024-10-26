@@ -15,7 +15,7 @@ class NavBarScreen extends StatefulWidget {
 
 class _NavBarScreenState extends State<NavBarScreen> {
   int currentIndex = 2;
-  List screens = const [
+  List screens =  [
     ConcoursScreen(),
     EventsScreen(),
     HomeScreen(),
@@ -26,6 +26,7 @@ class _NavBarScreenState extends State<NavBarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           setState(() {

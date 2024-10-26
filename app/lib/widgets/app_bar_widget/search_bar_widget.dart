@@ -1,8 +1,8 @@
 import 'package:app/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-class SearchBar extends StatelessWidget {
-  const SearchBar({super.key});
+class SearchBarWidget extends StatelessWidget {
+  const SearchBarWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class SearchBar extends StatelessWidget {
         children: [
           const Icon(
             Icons.search,
-            color: Colors.grey,
+            color: Colors.black,
             size: 30,
           ),
           const SizedBox(width: 10,),

@@ -1,6 +1,10 @@
+import 'package:app/screen/Concours/concours.dart';
+import 'package:app/screen/Events/events.dart';
 import 'package:app/utils/colors.dart';
+import 'package:app/widgets/app_bar_widget/search_bar_widget.dart';
 import 'package:app/widgets/cart_widget.dart';
 import 'package:app/widgets/category_widget.dart';
+import 'package:app/widgets/concours/concours_list_widget.dart';
 import 'package:app/widgets/slider_widget/home_image_slider.dart';
 import 'package:app/widgets/slider_widget/image_slider.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
               CustomAppBar(),
               SizedBox(height: 20,),
               //Pour la barre de recherche
-              SearchBar(),
+              SearchBarWidget(),
               SizedBox(height: 40,),
               //Pour le Slider
               HomeImageSlider(
@@ -56,19 +60,55 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontWeight: FontWeight.w800
                     ),
                   ),
-                  Text(
-                    "VOIR TOUT",
-                     style: TextStyle(
-                       fontFamily: 'Poppins',
-                       fontWeight: FontWeight.w500,
-                       fontSize: 16,
-                       color: yDarkColor
-                     ),
+                  InkWell(
+                    onTap: (){
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>EventsScreen()));
+                    },
+                    child: Text(
+                      "VOIR TOUT",
+                       style: TextStyle(
+                         fontFamily: 'Poppins',
+                         fontWeight: FontWeight.w500,
+                         fontSize: 16,
+                         color: yDarkColor
+                       ),
+                    ),
                   ),
                 ],
               ),
               //pour l'affichage des concours précédents
               Cart(),
+              const SizedBox(height: 20,),
+              //Pour l'affichage des infos en rapport avec le concours
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Concours Yaatal Mbinde',
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w800
+                    ),
+                  ),
+                  InkWell(
+                    onTap: (){
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ConcoursScreen()));
+                    },
+                    child: Text(
+                      "VOIR TOUT",
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: yDarkColor
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              ConcoursWidget(),
+              const SizedBox(height: 20,),
             ],
           ),
         ),

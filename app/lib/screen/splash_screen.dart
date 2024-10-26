@@ -26,7 +26,7 @@ class SplashScreen extends StatelessWidget {
           TFadeAnimation(
             durationInMs: 1600,
             animatePosition: TAnimationPosition(
-              topAfter: 0, topBefore: -70, leftBefore: -70, leftAfter: 0,
+              topAfter: 60, topBefore: -10, leftBefore: -10, leftAfter: 55,
             ),
             child:Align(
                        alignment: AlignmentDirectional(0.78, 0),
@@ -42,7 +42,7 @@ class SplashScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     fontFamily: 'Poppins',
                     color: Color(0xFF034E0F),
-                    fontSize: 100,
+                    fontSize: 120,
                     fontWeight: FontWeight.bold
                   ),
                              
@@ -80,7 +80,7 @@ class SplashScreen extends StatelessWidget {
                        ),
                      ),
           ),
-          Positioned(
+           Positioned(
             top: 0,
             left: 0,
             child: Image(image: AssetImage(ySplashTopIcon)),
@@ -88,12 +88,23 @@ class SplashScreen extends StatelessWidget {
          
           TFadeAnimation(
             durationInMs: 2000,
-            animatePosition: TAnimationPosition(topBefore: 80, topAfter: 80, leftAfter: yDefaultSize, leftBefore: -80),
+            animatePosition: TAnimationPosition(topBefore: 100, topAfter: 220, leftAfter: yDefaultSize, leftBefore: -80),
             child: Obx(
               () => AnimatedPositioned(
                 duration: const Duration(milliseconds: 3600),
                 bottom: controller.animate.value ? 300:0,
-                child:Image(image: AssetImage(ySplashImage),),
+                child: const Image(image: AssetImage(ySplashImage),),
+              ),
+            ),
+          ),
+          TFadeAnimation(
+            durationInMs: 2000,
+            animatePosition: TAnimationPosition(bottomBefore: 50, bottomAfter: 110, leftAfter: 55, leftBefore: -80),
+            child: Obx(
+                  () => AnimatedPositioned(
+                duration: const Duration(milliseconds: 3600),
+                bottom: controller.animate.value ? 300:0,
+                child:Image(image: AssetImage(YSplashLogo), height: 200,),
               ),
             ),
           ),

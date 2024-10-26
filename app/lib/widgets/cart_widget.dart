@@ -19,53 +19,32 @@ class Cart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return GestureDetector(
-      onTap: (){
-
-      },
-      child: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: yCardBgColor,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GridView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.18,
+                crossAxisSpacing: 18,
+                mainAxisSpacing: 0
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 15,
-                ),
-                Center(
-                  child: GridView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                        childAspectRatio: 0.78,
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 20
-                      ),
-                      itemCount: videos.length,
-                      itemBuilder: (context, index){
-                        final videoId = YoutubePlayer.convertUrlToId(videos[index]);
-                        return InkWell(
-                          onTap: (){
-                            Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context)=>Player(videoId: videoId!))
-                            );
-                          },
-                          child: Image.network(YoutubePlayer.getThumbnail(videoId: videoId!))
-                        );
-                      }
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
+            itemCount: videos.length,
+            itemBuilder: (context, index){
+              final videoId = YoutubePlayer.convertUrlToId(videos[index]);
+              return InkWell(
+                  onTap: (){
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context)=>Player(videoId: videoId!))
+                    );
+                  },
+                  child: Image.network(YoutubePlayer.getThumbnail(videoId: videoId!))
+              );
+            }
+        ),
+      ],
     );
   }
 }
