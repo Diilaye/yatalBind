@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:app/utils/colors.dart';
+import 'package:app/utils/images_string.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -87,6 +89,7 @@ class _ParticipateScreenState extends State<ParticipateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: yWhiteColor,
       appBar: AppBar(
         title: Text('Formulaire d\'inscription'),
       ),
@@ -96,27 +99,34 @@ class _ParticipateScreenState extends State<ParticipateScreen> {
           key: _formKey,
           child: Column(
             children: [
-              _buildTextField(_firstNameController, 'Prénom'),
-              SizedBox(height: 10),
-              _buildTextField(_lastNameController, 'Nom'),
-              SizedBox(height: 10),
-              _buildTextField(_phoneController, 'Téléphone', isPhone: true),
-              SizedBox(height: 10),
+              SizedBox(
+                width: 180,
+                  child: Image.asset(ySplashImage)
+              ),
+              Text("Vous pouvez déposer votre candidature ici"),
+
+              _buildTextField(_firstNameController, 'Prénom', const Icon(Icons.account_circle)),
+              SizedBox(height: 15),
+              _buildTextField(_lastNameController, 'Nom', const Icon(Icons.account_circle)),
+              SizedBox(height: 15),
+              _buildTextField(_phoneController, 'Téléphone', isPhone: true, const Icon(Icons.phone_android_outlined)),
+              SizedBox(height: 15),
               GestureDetector(
                 onTap: () => _selectBirthDate(context),
                 child: AbsorbPointer(
                   child: _buildTextField(
                     _birthDateController,
                     'Date de Naissance',
+                      const Icon(Icons.edit_calendar_outlined)
                   ),
                 ),
               ),
-              SizedBox(height: 10),
-              _buildTextField(_addressController, 'Adresse Exacte'),
-              SizedBox(height: 10),
-              _buildTextField(_schoolController, 'École'),
-              SizedBox(height: 10),
-              _buildTextField(_professorController, 'Professeur'),
+              SizedBox(height: 15),
+              _buildTextField(_addressController, 'Adresse Exacte', const Icon(Icons.maps_home_work)),
+              SizedBox(height: 15),
+              _buildTextField(_schoolController, 'École', const Icon(Icons.school_rounded)),
+              SizedBox(height: 15),
+              _buildTextField(_professorController, 'Professeur', const Icon(Icons.school_sharp)),
               SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: _pickImage,
@@ -125,15 +135,18 @@ class _ParticipateScreenState extends State<ParticipateScreen> {
               ),
               if (_extraitFile != null) Text('Fichier sélectionné.'),
               SizedBox(height: 30),
-              ElevatedButton.icon(
-                onPressed: _submitForm,
-                icon: Icon(Icons.book),
-                label: Text('Valider'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _submitForm,
+                  icon: Icon(Icons.book),
+                  label: Text('Valider'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
                   ),
                 ),
               ),
@@ -149,15 +162,16 @@ class _ParticipateScreenState extends State<ParticipateScreen> {
   // Champ de texte réutilisable
   Widget _buildTextField(
       TextEditingController controller,
-      String label, {
+      String label, Icon icon,{
         bool isPhone = false,
       }) {
     return TextFormField(
       controller: controller,
       keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
       decoration: InputDecoration(
+        prefixIcon: icon,
         labelText: label,
-        border: OutlineInputBorder(),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
         filled: true,
         fillColor: Colors.grey[200],
         contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),

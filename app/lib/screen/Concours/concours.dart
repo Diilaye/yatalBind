@@ -21,7 +21,6 @@ class _ConcoursScreenState extends State<ConcoursScreen> {
     Size size = MediaQuery.of(context).size;
 
     return  Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: yWhiteColor,
       floatingActionButton: FloatingActionButton.extended(
           onPressed: (){
