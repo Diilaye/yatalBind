@@ -7,21 +7,20 @@ import 'dart:convert';
 VideoList videoListFromJson(String str) => VideoList.fromJson(json.decode(str));
 
 String videoListToJson(VideoList data) => json.encode(data.toJson());
-
 class VideoList {
-  String kind;
-  String etag;
-  String nextPageToken;
-  List<VideoItem> videos;
-  PageInfo pageInfo;
 
   VideoList({
-    this.kind = '',
-    this.etag = '',
-    this.nextPageToken = '',
-    required this.videos,
-    required this.pageInfo,
-  });
+    this.kind,
+    this.etag,
+    this.nextPageToken,
+    this.videos,
+    this.pageInfo,
+});
+  String? kind;
+  String? etag;
+  String? nextPageToken;
+  List<VideoItem>? videos;
+  PageInfo? pageInfo;
 
   factory VideoList.fromJson(Map<String, dynamic> json) => VideoList(
     kind: json["kind"],
@@ -35,22 +34,22 @@ class VideoList {
     "kind": kind,
     "etag": etag,
     "nextPageToken": nextPageToken,
-    "items": List<dynamic>.from(videos.map((x) => x.toJson())),
-    "pageInfo": pageInfo.toJson(),
+    "items": List<dynamic>.from(videos!.map((x) => x.toJson())),
+    "pageInfo": pageInfo!.toJson(),
   };
 }
 
 class VideoItem {
-  String kind;
-  String etag;
-  String id;
-  Video video;
+  String? kind;
+  String? etag;
+  String? id;
+  Video? video;
 
   VideoItem({
-    required this.kind,
-    required this.etag,
-    required this.id,
-    required this.video,
+    this.kind,
+    this.etag,
+    this.id,
+    this.video,
   });
 
   factory VideoItem.fromJson(Map<String, dynamic> json) => VideoItem(
@@ -64,35 +63,35 @@ class VideoItem {
     "kind": kind,
     "etag": etag,
     "id": id,
-    "snippet": video.toJson(),
+    "snippet": video!.toJson(),
   };
 }
 
 class Video {
-  DateTime publishedAt;
-  String channelId;
-  String title;
-  String description;
-  Thumbnails thumbnails;
-  String channelTitle;
-  String playlistId;
-  int position;
-  ResourceId resourceId;
-  String videoOwnerChannelTitle;
-  String videoOwnerChannelId;
+  DateTime? publishedAt;
+  String? channelId;
+  String? title;
+  String? description;
+  Thumbnails? thumbnails;
+  String? channelTitle;
+  String? playlistId;
+  int? position;
+  ResourceId? resourceId;
+  String? videoOwnerChannelTitle;
+  String? videoOwnerChannelId;
 
   Video({
-    required this.publishedAt,
-    required this.channelId,
-    required this.title,
-    required this.description,
-    required this.thumbnails,
-    required this.channelTitle,
-    required this.playlistId,
-    required this.position,
-    required this.resourceId,
-    required this.videoOwnerChannelTitle,
-    required this.videoOwnerChannelId,
+    this.publishedAt,
+    this.channelId,
+    this.title,
+    this.description,
+    this.thumbnails,
+    this.channelTitle,
+    this.playlistId,
+    this.position,
+    this.resourceId,
+    this.videoOwnerChannelTitle,
+    this.videoOwnerChannelId,
   });
 
   factory Video.fromJson(Map<String, dynamic> json) => Video(
@@ -110,27 +109,27 @@ class Video {
   );
 
   Map<String, dynamic> toJson() => {
-    "publishedAt": publishedAt.toIso8601String(),
+    "publishedAt": publishedAt!.toIso8601String(),
     "channelId": channelId,
     "title": title,
     "description": description,
-    "thumbnails": thumbnails.toJson(),
+    "thumbnails": thumbnails!.toJson(),
     "channelTitle": channelTitle,
     "playlistId": playlistId,
     "position": position,
-    "resourceId": resourceId.toJson(),
+    "resourceId": resourceId!.toJson(),
     "videoOwnerChannelTitle": videoOwnerChannelTitle,
     "videoOwnerChannelId": videoOwnerChannelId,
   };
 }
 
 class ResourceId {
-  String kind;
-  String videoId;
+  String? kind;
+  String? videoId;
 
   ResourceId({
-    required this.kind,
-    required this.videoId,
+    this.kind,
+    this.videoId,
   });
 
   factory ResourceId.fromJson(Map<String, dynamic> json) => ResourceId(
@@ -145,27 +144,27 @@ class ResourceId {
 }
 
 class Thumbnails {
-  Default thumbnailsDefault;
-  Default medium;
-  Default high;
-  Default standard;
-  Default maxres;
+  late Default thumbnailsDefault;
+  late Default medium;
+  late Default high;
+  late Default standard;
+  late Default maxres;
 
-  Thumbnails({
-    required this.thumbnailsDefault,
-    required this.medium,
-    required this.high,
-    required this.standard,
-    required this.maxres,
-  });
-
-  factory Thumbnails.fromJson(Map<String, dynamic> json) => Thumbnails(
-    thumbnailsDefault: Default.fromJson(json["default"]),
-    medium: Default.fromJson(json["medium"]),
-    high: Default.fromJson(json["high"]),
-    standard: Default.fromJson(json["standard"]),
-    maxres: Default.fromJson(json["maxres"]),
+  Thumbnails(
+    this.thumbnailsDefault,
+    this.medium,
+    this.high,
+    this.standard,
+    this.maxres,
   );
+
+  Thumbnails.fromJson(Map<String, dynamic> json){
+    thumbnailsDefault= Default.fromJson(json["default"]);
+    medium= Default.fromJson(json["medium"]);
+    high= Default.fromJson(json["high"]);
+    standard= Default.fromJson(json["standard"]);
+    maxres= Default.fromJson(json["maxres"]);
+  }
 
   Map<String, dynamic> toJson() => {
     "default": thumbnailsDefault.toJson(),
@@ -177,21 +176,21 @@ class Thumbnails {
 }
 
 class Default {
-  String url;
-  int width;
-  int height;
+  late String url;
+  late int width;
+  late int height;
 
-  Default({
-    required this.url,
-    required this.width,
-    required this.height,
-  });
-
-  factory Default.fromJson(Map<String, dynamic> json) => Default(
-    url: json["url"],
-    width: json["width"],
-    height: json["height"],
+  Default(
+    this.url,
+    this.width,
+    this.height,
   );
+
+  Default.fromJson(Map<String, dynamic> json){
+    url= json["url"];
+    width= json["width"];
+    height= json["height"];
+  }
 
   Map<String, dynamic> toJson() => {
     "url": url,
@@ -201,18 +200,18 @@ class Default {
 }
 
 class PageInfo {
-  int totalResults;
-  int resultsPerPage;
+  late int totalResults;
+  late int resultsPerPage;
 
-  PageInfo({
-    required this.totalResults,
-    required this.resultsPerPage,
-  });
-
-  factory PageInfo.fromJson(Map<String, dynamic> json) => PageInfo(
-    totalResults: json["totalResults"],
-    resultsPerPage: json["resultsPerPage"],
+  PageInfo(
+    this.totalResults,
+    this.resultsPerPage,
   );
+
+  PageInfo.fromJson(Map<String, dynamic> json){
+    totalResults= json["totalResults"];
+    resultsPerPage= json["resultsPerPage"];
+  }
 
   Map<String, dynamic> toJson() => {
     "totalResults": totalResults,

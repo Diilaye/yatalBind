@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:app/models/videos_list.dart';
 import 'package:app/models/youtube.dart';
 import 'package:app/utils/constant.dart';
-import 'package:app/widgets/cart_widget.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,7 +20,7 @@ class YoutubeService{
   --compressed
    */
 
-    static Future<Channelnfo> getChannelInfo()async{
+    static Future<Channelnfo> getChannelInfo() async{
       Map<String, String> parameters = {
         'part': 'snippet,contentDetails,statistics',
         'id': CHANNEL_ID,
@@ -31,8 +30,7 @@ class YoutubeService{
         HttpHeaders.contentTypeHeader:'application/json',
       };
       Uri uri = Uri.https(_baseUrl, '/youtube/v3/playlistItems', parameters);
-      Response response = http.get(uri, headers: headers) as Response;
-      print(response.body);
+      http.Response response = await http.get(uri, headers: headers);
       Channelnfo channel = channelnfoFromJson(response.body);
       return channel;
     }
@@ -41,7 +39,7 @@ class YoutubeService{
       Map<String, String> parameters = {
         'part':'snippet',
         'playlistId':playListId,
-        'maxResults':'8',
+        'maxResults': '10',
         'pageToken':pageToken,
         'key': Constants.API_KEY,
       };
@@ -49,8 +47,7 @@ class YoutubeService{
         HttpHeaders.contentTypeHeader:'application/json',
       };
       Uri uri = Uri.https(_baseUrl, '/youtube/v3/channels', parameters);
-      Response response = http.get(uri, headers: headers) as Response;
-      print(response.body);
+      http.Response response = await http.get(uri, headers: headers);
       VideoList videoList = videoListFromJson(response.body);
       return videoList;
     }
