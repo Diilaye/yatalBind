@@ -8,6 +8,7 @@ import 'package:app/widgets/concours/concours_list_widget.dart';
 import 'package:app/widgets/slider_widget/home_image_slider.dart';
 import 'package:app/widgets/slider_widget/image_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../widgets/app_bar_widget/home_app_bar.dart';
@@ -93,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   InkWell(
                     onTap: (){
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ConcoursScreen()));
+                     Get.to(ConcoursScreen());
                     },
                     child: Text(
                       "VOIR TOUT",

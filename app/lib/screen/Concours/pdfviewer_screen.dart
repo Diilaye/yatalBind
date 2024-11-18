@@ -1,3 +1,4 @@
+import 'package:app/utils/colors.dart' as color;
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
 
@@ -13,7 +14,7 @@ class PDFViewerWidget extends StatefulWidget {
 
 class _PDFViewerWidgetState extends State<PDFViewerWidget> {
   late PdfControllerPinch _pdfController;
-
+  int totalPageCount = 0, currentPage = 1;
   @override
   void initState() {
     super.initState();
@@ -34,17 +35,82 @@ class _PDFViewerWidgetState extends State<PDFViewerWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Visualiseur PDF'),
+        backgroundColor: color.AppColor.yAccentColor,
+        title: Text('LECTURE PDF', style: TextStyle(color: color.AppColor.yDarkColor, fontWeight: FontWeight.bold),),
       ),
-      body: PdfViewPinch(
+      body: _buildUi(),
+    );
+  }
+
+  Widget _buildUi(){
+    return Column( 
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Total Pages: ${totalPageCount}",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: color.AppColor.yDarkColor,
+              ),
+            ),
+            IconButton(
+              onPressed: (){
+                _pdfController.previousPage(
+                  duration: Duration(milliseconds: 200), 
+                  curve: Curves.linear
+                );
+              }, 
+              icon: Icon(
+                Icons.arrow_back_ios_rounded,
+                color: color.AppColor.yDarkColor,
+              ),
+            ),
+            Text(
+              "Page: ${currentPage}",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: color.AppColor.yDarkColor,
+              )
+            ),
+            IconButton(
+              onPressed: (){
+                 _pdfController.nextPage(
+                  duration: Duration(milliseconds: 200), 
+                  curve: Curves.linear
+                );
+              }, 
+              icon: Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: color.AppColor.yDarkColor,
+              ),
+            )
+          ],
+        ),
+        _pdfView(),
+    ]);
+  }
+  Widget _pdfView(){
+    return Expanded(
+      child: PdfViewPinch(
+        scrollDirection: Axis.vertical,
         controller: _pdfController,
         onDocumentLoaded: (document) {
-          print('Document chargé avec ${document.pagesCount} pages.');
+          setState(() {
+            totalPageCount = document.pagesCount;
+          });
         },
         onPageChanged: (page) {
-          print('Page actuelle : ${page}');
+          setState(() {
+            currentPage = page;
+          });
         },
       ),
-    );
+    ); 
   }
 }
