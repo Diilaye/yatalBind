@@ -1,28 +1,32 @@
+import 'package:app/models/video_model.dart';
+
 class Channel {
-  String id; 
-  String title;
-  String profilPictureUrl;
-  String subscriberCount;
-  String videoCount;
-  String uploadPlaylistId;
-  List<Video> videos;
+  final String id;
+  final String title;
+  final String profilePictureUrl;
+  final String subscriberCount;
+  final String videoCount;
+  final String uploadPlaylistId;
+  List<Video> video;
 
-  Channel(
-    this.id,
-    this.title,
-    this.profilPictureUrl,
-    this.subscriberCount,
-    this.videoCount,
-    this.uploadPlaylistId,
-    this.videos,
-  );
-
-   Channel.fromJson(Map<String, dynamic> map){
-      id= map['id'];
-      title= map['snippet']['title']; 
-      profilPictureUrl= map['snippet']['thumbnails']['default']['url']; 
-      subscriberCount= map['stattistics']['subscriberCount']; 
-      videoCount= map['statistics']['videoCount'];
-      uploadPlaylistId= map['contentDetails']['relatedPlaylits']['uploads'];
+  Channel({
+    required this.id,
+    required this.title,
+    required this.profilePictureUrl,
+    required this.subscriberCount,
+    required this.videoCount,
+    required this.uploadPlaylistId,
+    required this.video,
+  });
+   factory Channel.fromMap(Map<String, dynamic> map) {
+    return Channel(
+      id: map['id'],
+      title: map['snippet']['title'],
+      profilePictureUrl: map['snippet']['thumbnails']['default']['url'],
+      subscriberCount: map['statistics']['subscriberCount'],
+      videoCount: map['statistics']['videoCount'],
+      uploadPlaylistId: map['contentDetails']['relatedPlaylists']['uploads'],
+      video: [],
+    );
   }
 }

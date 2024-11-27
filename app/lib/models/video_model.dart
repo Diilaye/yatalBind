@@ -1,24 +1,20 @@
-class Videos{
-  final String title;
-  final String time;
-  final String thumbnail;
-  final String videoUrl;
-
-  Videos({
-    required this.title,
-    required this.thumbnail,
-    required this.time,
-    required this.videoUrl
+class Video {
+  final String? id;
+  final String? title;
+  final String? thumbnailUrl;
+  final String? channelTitle;
+  Video({
+    this.id,
+    this.title,
+    this.thumbnailUrl,
+    this.channelTitle,
   });
-
-  factory Videos.fromJson(Map<String, dynamic>json){
-    return Videos(
-      title: json['title'],
-      time: json['time'],
-      thumbnail: json['thumbnail'],
-      videoUrl: json['videoUrl'],
+  factory Video.fromMap(Map<String, dynamic> snippet) {
+    return Video(
+      id: snippet['resourceId']['videoId'],
+      title: snippet['title'],
+      thumbnailUrl: snippet['thumbnails']['high']['url'],
+      channelTitle: snippet['channelTitle'],
     );
   }
-
-  
 }

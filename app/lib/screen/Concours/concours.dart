@@ -73,7 +73,7 @@ class _ConcoursScreenState extends State<ConcoursScreen> {
                       bottom: 0,
                       //top: size.height * 0.49,
                       child: Container(
-                        height: size.height * 0.96,
+                        height: size.height * 0.75,
                         width: size.width,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(

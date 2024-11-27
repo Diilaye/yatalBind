@@ -1,11 +1,11 @@
-import 'package:app/models/videos_list.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/gestures.dart';
+import 'dart:convert';
+import 'dart:ui';
+
+import 'package:app/bloc/youtube/player.dart';
 import 'package:flutter/material.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:app/utils/colors.dart' as color;
-import 'package:app/models/youtube.dart';
-import 'package:app/services/youtube_service.dart';
+import 'package:flutter/services.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
@@ -15,122 +15,132 @@ class EventsScreen extends StatefulWidget {
 }
 
 class _EventsScreenState extends State<EventsScreen> {
-
+  List _videos = [];
   bool _playArea = false;
-  late Channelnfo _channelnfo;
-  late Item _item;
-  late bool _loading;
-  late VideoList _videoList;
-  late String _playListId;
-  late String _nextPageToken;
+  late YoutubePlayerController _controller;
+  late bool _isPlayerReady;
+
+  //Fetch videos from json file
+  Future<void> getVideos() async {
+    final String response = await DefaultAssetBundle.of(context).loadString("json/videoinfo.json");
+    final data = await json.decode(response);
+    setState(() {
+      _videos = data['videos'];
+    });
+  }
+  /*
+   _getVideos() async{
+    await DefaultAssetBundle.of(context).loadString("json/videoinfo.json").then((value){
+      _videos = json.decode(value);
+    });
+  }
+  */
+  @override
+  void initState(){
+    super.initState();
+    _isPlayerReady = false;
+    getVideos();
+  }
+
+  void _listener() {
+    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
+      //
+    }
+  }
+  @override
+  void deactivate() {
+    _controller.pause();
+    super.deactivate();
+  }
 
   @override
-  void initState() {
-    super.initState();
-    _loading= true;
-    _nextPageToken = '';
-    _videoList = VideoList();
-    _videoList.videos = <VideoList>[].cast<VideoItem>();
-    _getChannelInfo();
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
-  _getChannelInfo() async{
-    _channelnfo = await YoutubeService.getChannelInfo();
-    _item = _channelnfo.items[0];
-    _playListId = _item.contentDetails.relatedPlaylists.uploads;
-    print('playlistid: $_playListId');
-    await _loadVideos();
-    setState((){
-      _loading = false;
-    });
-    
-  }
-  _loadVideos() async {
-    VideoList tempVideoList = YoutubeService.getVideosList(
-      playListId: _playListId, 
-      pageToken: _nextPageToken
-      ) as VideoList;
-      _nextPageToken = tempVideoList.nextPageToken!;
-      _videoList.videos!.addAll(tempVideoList.videos as Iterable<VideoItem>);
-      print('videos: ${_videoList.videos!.length}');
-      setState(() {
-        
-      });
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        //BackgroundGradient
-        decoration: _playArea==false?BoxDecoration(
+        decoration: _playArea ==false ?
+        BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              color.AppColor.yAccentColor.withOpacity(0.8),
+              color.AppColor.yAccentColor.withOpacity(0.9),
               color.AppColor.ySecondaryColor
             ],
             begin: const FractionalOffset(0.0, 0.4),
-            end: Alignment.topRight,
+            end: Alignment.topRight
           ),
-        ):BoxDecoration(
-           color: color.AppColor.yAccentGradientdColor,
+        )
+            :BoxDecoration(
+          color: color.AppColor.yCardBgColor
         ),
+        //DEBU PARTIE LECTURE TITRE OU VIDEO
         child: Column(
           children: [
-            //Partie affichage ecran video player
-            _playArea==false?Container(
-              padding: const EdgeInsets.only(top: 70, left: 30, right: 30),
+            _playArea==false
+                ? Container(
+              padding: EdgeInsets.only(top: 70, left: 30, right: 30),
               width: MediaQuery.of(context).size.width,
               height: 300,
-              
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
+                      Icon(
+                          Icons.arrow_back_ios,
+                        color: color.AppColor.yWhiteColor,
+                        size: 20,
+                      ),
                       Expanded(child: Container()),
                       Icon(
-                        Icons.info_outline,
+                          Icons.info_outline,
                         size: 20,
                         color: color.AppColor.yWhiteColor,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20,),
+                  //Debut Titre Page
+                  const SizedBox(height: 30,),
                   Text(
-                    'Vos Videos',
+                      "Votre Chaine",
                     style: TextStyle(
-                        fontSize: 25,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w800,
-                        color: color.AppColor.yWhiteColor
+                      fontFamily: 'Poppins',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                      color: color.AppColor.yWhiteColor
                     ),
                   ),
-                  const SizedBox(height: 15,),
+                  const SizedBox(height: 5,),
                   Text(
-                    'Yaatal Mbindoum Al Xurane',
+                    "C3s Yaatal Mbinde Al Xurane",
                     style: TextStyle(
-                        fontSize: 25,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w800,
-                        color: color.AppColor.yWhiteColor
+                      fontFamily: 'Poppins',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                      color: color.AppColor.yWhiteColor
                     ),
                   ),
-                  const SizedBox(height: 40,),
-                  //Premiere cercle pour la durée totale des temps
+                  //Fin PARTIE Titre
+                  const SizedBox(height: 50,),
+                  //LIGNE CONTENANT LES STATISTICS
                   Row(
                     children: [
                       Container(
-                        width: 110,
+                        width: 90,
                         height: 30,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(10),
                           gradient: LinearGradient(
-                            colors: [
-                              color.AppColor.ySecondaryColor,
-                              color.AppColor.yDarkColor
-                            ],
+                              colors: [
+                                color.AppColor.ySecondaryColor,
+                                color.AppColor.yDarkColor
+                              ],
                             begin: Alignment.bottomLeft,
-                            end: Alignment.bottomRight
+                            end: Alignment.topRight
                           ),
                         ),
                         child: Row(
@@ -141,9 +151,9 @@ class _EventsScreenState extends State<EventsScreen> {
                               size: 20,
                               color: color.AppColor.yAccentColor,
                             ),
-                            const SizedBox(height: 5,),
+                            SizedBox(width: 5,),
                             Text(
-                              "10H30min",
+                              "68min",
                               style: TextStyle(
                                 fontSize: 16,
                                 color: color.AppColor.yWhiteColor
@@ -152,19 +162,20 @@ class _EventsScreenState extends State<EventsScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 20,),
+                      //FIN 1ERE STATS
+                      const SizedBox(width: 60,),
                       Container(
                         width: 200,
                         height: 30,
-                            decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
                           gradient: LinearGradient(
-                            colors: [
-                              color.AppColor.ySecondaryColor,
-                              color.AppColor.yDarkColor
-                            ],
-                            begin: Alignment.bottomLeft,
-                            end: Alignment.bottomRight
+                              colors: [
+                                color.AppColor.ySecondaryColor,
+                                color.AppColor.yDarkColor
+                              ],
+                              begin: Alignment.bottomLeft,
+                              end: Alignment.topRight
                           ),
                         ),
                         child: Row(
@@ -175,24 +186,24 @@ class _EventsScreenState extends State<EventsScreen> {
                               size: 20,
                               color: color.AppColor.yAccentColor,
                             ),
-                            const SizedBox(height: 5,),
+                            SizedBox(width: 5,),
                             Text(
-                              "Youtube Channel, List",
+                              "100 Videos",
                               style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 16,
                                   color: color.AppColor.yWhiteColor
                               ),
                             ),
                           ],
                         ),
                       ),
+                      //FIN 2IEME STATS
                     ],
                   ),
-                  //
                 ],
               ),
             )
-            :Container(
+                :Container(
               child: Column(
                 children: [
                   Container(
@@ -201,14 +212,20 @@ class _EventsScreenState extends State<EventsScreen> {
                     child: Row(
                       children: [
                         InkWell(
-                          onTap: (){},
-                           child: Icon(Icons.arrow_back_ios, size: 20, color: color.AppColor.yDarkColor,),
+                          onTap: (){
+                            debugPrint("Tapped");
+                          },
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            size: 20,
+                            color: color.AppColor.yAccentColor,
+                          ),
                         ),
                         Expanded(child: Container()),
                         Icon(
                           Icons.info_outline,
                           size: 20,
-                          color: color.AppColor.yDarkColor,
+                          color: color.AppColor.yAccentColor,
                         ),
                       ],
                     ),
@@ -217,113 +234,199 @@ class _EventsScreenState extends State<EventsScreen> {
                 ],
               ),
             ),
-            //Partie liste des videos
+            //FIN PARTIE LECTURE DU VIDEO OU TITRE
+
+            //DEBUT PARTIE LISTE DES VIDEOS
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: color.AppColor.yWhiteColor,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(70),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 30,),
-                    Row(
-                      children: [
-                        SizedBox(width: 30,),
-                        Text(
-                          "LISTE DES VIDEOS",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: color.AppColor.yAccentColor
-                          ),
-                        ),
-                        Expanded(child: Container()),
-                        Row(
-                          children: [
-                            Icon(Icons.loop, size: 30, color: color.AppColor.yAccentColor,),
-                          ],
-                        ),
-                        const SizedBox(width: 10,),
-                      ],
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: color.AppColor.yWhiteColor,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(70),
                     ),
-                    //Partie qui va generer la liste des videos
-                    Expanded(
-                      child: Column(
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 30,),
+                      //Titre
+                      Row(
                         children: [
-                          _buildInfoView(),
-                          Expanded(
-                            child: ListView.builder(
-                              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-                              itemCount: _videoList.videos!.length,
-                              itemBuilder: (context, index){
-                                VideoItem videoItem = _videoList.videos![index];
-                                return GestureDetector(
-                                  onTap: (){},
-                                  child: Container(
-                                    child: Row(
-                                      children: [
-                                        CachedNetworkImage(
-                                          imageUrl: videoItem.video!.thumbnails!.thumbnailsDefault.url,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                                
-                              }
+                          const SizedBox(width: 30,),
+                          Text(
+                              "LISTES DES VIDEOS",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: color.AppColor.yAccentColor
                             ),
                           ),
+                          Expanded(child: Container()),
+                          Row(
+                            children: [
+                              Icon(Icons.loop, size: 20, color: color.AppColor.yAccentColor,),
+                            ],
+                          ),
+                          const SizedBox(width: 30,),
                         ],
                       ),
-                      
-                    ),
-                  ],
+                      const SizedBox(height: 15,),
+                      //AFFICHAGE DES VIDEOS DE LA CHAINE
+                      Expanded(
+                        child: _listView(),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             ),
+            //FIN PARTIE LISTE DES VIDEOS
           ],
         ),
+
       ),
     );
   }
 
-    Widget _playView(BuildContext context){
-    final controller = "_controller";
-    if(controller == ""){
-      return const Placeholder();
-    }else{
-      return  const Placeholder();
-    }
+  //FONTION QUI RETOURNE LA VIDEO EN COURS
+  _playView(BuildContext context){
+    return Container(
+        child: YoutubePlayer(
+        controller: _controller,
+        showVideoProgressIndicator: true,
+        onReady: () {
+        print('Player is ready.');
+        _isPlayerReady = true;
+        _controller.addListener(_listener);
+      },
+    )
+    );
   }
-  _buildInfoView(){
-    return _loading 
-    ? CircularProgressIndicator()
-    :Container(
-      child: Card(
-        child: Row(
-          children: [
-            CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(
-              _item.snippet.thumbnails.medium.url
-            ),
-            ),
-            SizedBox(width: 20,),
-            Text(
-              _item.snippet.title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
+  //FONTION QUI RETOURBNE LA VIDEO QU'ON VEUT REGARDER
+  _onSelectedVideo(String id){
+     final controller = YoutubePlayerController(
+         initialVideoId:  id,
+       flags: const YoutubePlayerFlags(
+         mute: false,
+         autoPlay: true,
+       ),
+     )..addListener(_listener);
+     _controller = controller;
+     setState(() {
+     });
+  }
+  //FONCTION QUI RETOURNE LISTVIEWBULDER
+  _listView(){
+    return ListView.builder(
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+        itemCount: _videos.length,
+        itemBuilder: (_, int index){
+          return GestureDetector(
+            onTap: (){
+              final videoId = YoutubePlayer.convertUrlToId(_videos[index]["videoUrl"]);
+              _onSelectedVideo(videoId!);
+              setState(() {
+                if(_playArea == false){
+                  _playArea = true;
+                }
+              });
+            },
+            child: _buildCard(index),
+          );
+        }
+    );
+  }
+  //FONCTION QUI RETOURNE L'AFFICHAGE DES VIDEOS
+  _buildCard(int index){
+    return Container(
+      height: MediaQuery.of(context).size.height*0.19,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const SizedBox(width: 5,),
+              Container(
+                width: MediaQuery.of(context).size.width*0.2,
+                height: MediaQuery.of(context).size.height*0.10,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                    image: AssetImage(_videos[index]["thumbnail"]),
+                    fit: BoxFit.cover,
+                  ),
+
+                ),
               ),
-            ),
-            Text(
-              _item.statistics.videoCount,
-            ),
-          ],
-        ),
+              const SizedBox(width: 10,),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _videos[index]["title"],
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins'
+                    ),
+                  ),
+                  const SizedBox(height: 10,),
+                  Padding(
+                    padding: EdgeInsets.only(top: 3),
+                    child: Text(
+                      _videos[index]["time"],
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w100,
+                          color: color.AppColor.yDarkColor
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          //TIRET DE SEPARATION ENTRE LES VIDEOS
+          const SizedBox(height: 18,),
+          Row(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width*0.16,
+                height: MediaQuery.of(context).size.height*0.03,
+                decoration: BoxDecoration(
+                  color: Color(0xFFeaeefc),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: Text(
+                    "15s rest",
+                    style: TextStyle(
+                      color: Color(0xff056111),
+                    ),
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  for(int i=0; i<55; i++)
+                    i.isEven?Container(
+                      width:  MediaQuery.of(context).size.width*0.01,
+                      height:  MediaQuery.of(context).size.height*0.01,
+                      decoration: BoxDecoration(
+                          color: Color(0xa3024f15),
+                          borderRadius: BorderRadius.circular(3)
+                      ),
+                    )
+                        :Container(
+                      width: 3,
+                      height: 1,
+                      color: color.AppColor.yWhiteColor,
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
+
     );
   }
 }

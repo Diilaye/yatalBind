@@ -22,15 +22,17 @@ class YoutubeService{
 
     static Future<Channelnfo> getChannelInfo() async{
       Map<String, String> parameters = {
-        'part': 'snippet,contentDetails,statistics',
-        'id': CHANNEL_ID,
+        'part': 'snippet,ContentDetails',
+        'channelId': 'UC-knB_7H32RI6bIE3l0vw4',
+        'maxResults': '10',
         'key': Constants.API_KEY
       };
       Map<String, String> headers = {
         HttpHeaders.contentTypeHeader:'application/json',
       };
-      Uri uri = Uri.https(_baseUrl, '/youtube/v3/playlistItems', parameters);
+      Uri uri = Uri.https(_baseUrl, '/youtube/v3/channels', parameters);
       http.Response response = await http.get(uri, headers: headers);
+      //print(response.body);
       Channelnfo channel = channelnfoFromJson(response.body);
       return channel;
     }
@@ -38,7 +40,7 @@ class YoutubeService{
     static Future<VideoList> getVideosList({required String playListId, required String pageToken})async{
       Map<String, String> parameters = {
         'part':'snippet',
-        'playlistId':playListId,
+        'playlistId':'PLMRVCOEhExwrP1Smj7M_y3GFovON7lDJb',
         'maxResults': '10',
         'pageToken':pageToken,
         'key': Constants.API_KEY,
@@ -46,7 +48,7 @@ class YoutubeService{
       Map<String, String> headers = {
         HttpHeaders.contentTypeHeader:'application/json',
       };
-      Uri uri = Uri.https(_baseUrl, '/youtube/v3/channels', parameters);
+      Uri uri = Uri.https(_baseUrl, '/youtube/v3/playlists', parameters);
       http.Response response = await http.get(uri, headers: headers);
       VideoList videoList = videoListFromJson(response.body);
       return videoList;

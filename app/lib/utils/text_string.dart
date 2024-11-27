@@ -1,5 +1,5 @@
-const String yAppStartName = "Y";
-const String yAppMidlleName = "aatal Mbindoum";
+const String yAppStartName = "Concours C3S";
+const String yAppMidlleName = "Yaatal Mbindoum AL XURANE";
 const String yAppName = "AL XURANE";
 const String yApptagLine = "Promouvoir la calligraphie du saint coran";
 
