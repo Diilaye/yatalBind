@@ -1,129 +1,130 @@
 import 'package:app/bloc/fade_in_animation_controller.dart';
+import 'package:app/utils/images_string.dart';
+import 'package:app/utils/text_string.dart';
 import 'package:app/widgets/fade_in_animation/animation_widget.dart';
 import 'package:app/widgets/fade_in_animation/fade_in_animation_model.dart';
 import 'package:get/get.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:app/screen/nav_bar_screen.dart';
+import 'package:app/utils/colors.dart' as color;
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:app/utils/size.dart';
-import 'package:app/utils/text_string.dart';
-import 'package:app/utils/colors.dart';
-import 'package:app/utils/images_string.dart';
-
+import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatelessWidget {
-  SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
-  
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(FadeInAnimationController());
+    final size = MediaQuery.of(context).size;
+
     controller.startAnimation();
 
     return Scaffold(
-      backgroundColor: yWhiteColor,
+      backgroundColor: color.AppColor.yAccentColor,
       body: Stack(
-        children:  [
+        children: [
           TFadeAnimation(
-            durationInMs: 1600,
-            animatePosition: TAnimationPosition(
-              topAfter: 60, topBefore: -10, leftBefore: -10, leftAfter: 55,
-            ),
-            child:Align(
-                       alignment: AlignmentDirectional(0.78, 0),
-                       child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Align(
-                alignment: AlignmentDirectional(0, 1),
-                child: Text(
-                  yAppStartName,
-                  textAlign: TextAlign.start,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontFamily: 'Poppins',
-                    color: Color(0xFF034E0F),
-                    fontSize: 120,
-                    fontWeight: FontWeight.bold
+
+              animatePosition: TAnimationPosition(topAfter: 80, topBefore: 0, leftAfter: 90, leftBefore: 0),
+              durationInMs: 800,
+              child: Align(
+                alignment: AlignmentDirectional(0.78, 0),
+
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Align(
+                        alignment: AlignmentDirectional(0, 1),
+                        child: Text(
+                            yAppStartName,
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            fontFamily: 'Poppins',
+                            fontSize: 30,
+                            color: color.AppColor.yWhiteColor
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                             
+              ),
+          ),
+          TFadeAnimation(
+
+            animatePosition: TAnimationPosition(topAfter: 120, topBefore: 0, leftAfter: 18, leftBefore: 0),
+            durationInMs: 800,
+            child: Align(
+              alignment: AlignmentDirectional(0.78, 0),
+
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Align(
+                    alignment: AlignmentDirectional(0, 1),
+                    child: Text(
+                      yAppMidlleName,
+                      textAlign: TextAlign.start,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          fontFamily: 'Poppins',
+                          fontSize: 27,
+                          color: color.AppColor.yWhiteColor
+                      ),
+                    ),
                   ),
-              ),
-           
-            Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                yAppMidlleName,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontFamily: 'Poppins',
-                  fontSize: 36,
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600
-                ),
-              ),
-               Text(
-                yAppName,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontFamily: 'Poppins',
-                  fontSize: 36,
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600
-                ),
-              ),
-            ],
-                       ),
-            ],
-                       ),
-                     ),
-          ),
-           Positioned(
-            top: 0,
-            left: 0,
-            child: Image(image: AssetImage(ySplashTopIcon)),
-          ),
-         
-          TFadeAnimation(
-            durationInMs: 2000,
-            animatePosition: TAnimationPosition(topBefore: 100, topAfter: 220, leftAfter: yDefaultSize, leftBefore: -80),
-            child: Obx(
-              () => AnimatedPositioned(
-                duration: const Duration(milliseconds: 3600),
-                bottom: controller.animate.value ? 300:0,
-                child: const Image(image: AssetImage(ySplashImage),),
+                ],
               ),
             ),
           ),
+          //SPLASH IMAGE C3S
           TFadeAnimation(
+              animatePosition: TAnimationPosition(topAfter: size.height*0.21, topBefore: 0, leftAfter: size.width*0.2, leftBefore: 0),
+              durationInMs: 2000,
+              child: Obx(
+              ()=>AnimatedPositioned(
+                  child: const Image(
+                    image: AssetImage(YSplashLogo),
+                    height: 160,
+                  ),
+                  bottom: controller.animate.value?300:0,
+                  duration: const Duration(milliseconds: 2500)
+              ),
+              ),
+          ),
+          TFadeAnimation(
+            animatePosition: TAnimationPosition(topAfter: size.height*0.26, topBefore: 0, leftAfter: 0, leftBefore: 20),
             durationInMs: 2000,
-            animatePosition: TAnimationPosition(bottomBefore: 50, bottomAfter: 110, leftAfter: 55, leftBefore: -80),
             child: Obx(
-                  () => AnimatedPositioned(
-                duration: const Duration(milliseconds: 3600),
-                bottom: controller.animate.value ? 300:0,
-                child:Image(image: AssetImage(YSplashLogo), height: 200,),
+                  ()=>AnimatedPositioned(
+                  child: Lottie.asset(
+                      "json/Animation.json",
+                    fit: BoxFit.fill,
+                    ),
+                  right: controller.animate.value? 300:0,
+                  duration: const Duration(milliseconds: 2500)
               ),
             ),
+
           ),
-          Positioned(
-            bottom: 200,
-            right: yDefaultSize,
-            child:Container(
-              width: ySplashContainerSize,
-              height: ySplashContainerSize,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-              color: yPrimaryColor,
+          //SPLASH LOGO YAATAL
+          TFadeAnimation(
+            animatePosition: TAnimationPosition(bottomAfter: size.height*-0.03, bottomBefore: 0, leftAfter: size.width*0.01, leftBefore: 0),
+            durationInMs: 2000,
+            child: Obx(
+                  ()=>AnimatedPositioned(
+                  child: const Image(
+                    image: AssetImage(ySplashImage),
+
+                  ),
+                  bottom: controller.animate.value?300:0,
+                  duration: const Duration(milliseconds: 2500)
               ),
             ),
           ),
         ],
-      )
+      ),
     );
   }
- 
 }
-

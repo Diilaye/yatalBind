@@ -1,23 +1,27 @@
 {
 
 "videos":[
-  {
-    "title": "EMISSION YARU AK YARE (N-26)",
-    "time": "26 min 27 second",
-    "thumbnail": "assets/youtube/yaruakyare26.png",
-    "videoUrl": "https://www.youtube.com/watch?v=DWM8hYsFcTE"
-  },
-  {
-    "title": "EMISSION YARU AK YARE (N-25)",
-    "time": "32min 58s",
-    "thumbnail": "assets/youtube/yaruakyare25.png",
-    "videoUrl": "https://www.youtube.com/watch?v=jVkLSA9sbl4"
-  },
-  {
-    "title": "test",
-    "time": "12min 11s",
-    "thumbnail": "assets/youtube/emissionbole25.png",
-    "videoUrl": " 'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4'"
-  }
+
+    {
+      "title": "EMISSION YARU AK YARE (N-26)",
+      "time": "26 min 27 second",
+      "thumbnail": "assets/youtube/yaruakyare26.png",
+      "videoUrl": "https://www.youtube.com/watch?v=jVkLSA9sbl4",
+      "videoId": "jVkLSA9sbl4"
+    },
+    {
+      "title": "EMISSION YARU AK YARE (N-25)",
+      "time": "32min 58s",
+      "thumbnail": "assets/youtube/yaruakyare25.png",
+      "videoUrl": "https://www.youtube.com/watch?v=jVkLSA9sbl4",
+      "videoId": "jVkLSA9sbl4"
+    },
+    {
+      "title": "test",
+      "time": "12min 11s",
+      "thumbnail": "assets/youtube/emissionbole25.png",
+      "videoUrl": "https://www.youtube.com/watch?v=jVkLSA9sbl4",
+      "videoId": "jVkLSA9sbl4"
+    }
 ]
 }

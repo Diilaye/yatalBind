@@ -3,6 +3,7 @@ import 'package:app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+
 final  videos = [
   "https://www.youtube.com/watch?v=mG3Kp6S3nIw",
   "https://www.youtube.com/watch?v=qkZmW_7l8v0",
@@ -25,7 +26,7 @@ class Cart extends StatelessWidget {
         GridView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 1.18,
                 crossAxisSpacing: 18,
@@ -37,7 +38,7 @@ class Cart extends StatelessWidget {
               return InkWell(
                   onTap: (){
                     Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context)=>Player(videoId: videoId!))
+                        MaterialPageRoute(builder: (context)=>Player(videoId: videoId))
                     );
                   },
                   child: Image.network(YoutubePlayer.getThumbnail(videoId: videoId!))

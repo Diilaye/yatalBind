@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:arabic_font/arabic_font.dart';
 import '../../utils/colors.dart';
 
 class CustomAppBar extends StatelessWidget {
@@ -22,11 +22,11 @@ class CustomAppBar extends StatelessWidget {
             icon: const Icon(Icons.notifications_outlined,size: 20, color: yWhiteColor,)
         ),
         const Text(
-          "مرحباً بكم",
-          style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 25,
-              fontWeight: FontWeight.w600
+          "مسابقة C3S الوطنية في رسم القرآن الكريم والخط المحلي",
+          style: ArabicTextStyle(
+            arabicFont: ArabicFont.dinNextLTArabic,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
           ),
 
         )

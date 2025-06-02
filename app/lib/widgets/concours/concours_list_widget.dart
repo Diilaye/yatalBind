@@ -1,5 +1,6 @@
 import 'package:app/models/concours_list.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ConcoursWidget extends StatelessWidget {
   const ConcoursWidget({super.key});
@@ -12,8 +13,10 @@ class ConcoursWidget extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: concourslist.length,
         itemBuilder: (context, index){
+          
           return Column(
             children: [
+              
               Container(
                 height: 155,
                 width: 165,
@@ -25,10 +28,10 @@ class ConcoursWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 5,),
+              const SizedBox(height: 5,),
               Text(
                   concourslist[index].titre,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 12,
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.bold

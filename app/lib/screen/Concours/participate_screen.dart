@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:app/utils/colors.dart';
+import 'package:app/utils/colors.dart' as color;
 import 'package:app/utils/images_string.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -27,13 +27,34 @@ class _ParticipateScreenState extends State<ParticipateScreen> {
   // Variables pour la localisation et le fichier image
   LatLng? _currentPosition;
   File? _extraitFile;
+  File?_image;
 
   // Méthode pour choisir une image depuis la galerie
+  Future<void> _pickImageCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      final file = File(pickedFile.path);
+
+      if (await file.length() > 1 * 1024 * 1024) {
+        // Vérifie que le fichier ne dépasse pas 1 Mo
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Le fichier ne doit pas dépasser 1 Mo.')),
+        );
+      } else {
+        setState(() {
+          _extraitFile = file;
+        });
+
+    }
+  }
+}
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       final file = File(pickedFile.path);
+
       if (await file.length() > 1 * 1024 * 1024) {
         // Vérifie que le fichier ne dépasse pas 1 Mo
         ScaffoldMessenger.of(context).showSnackBar(
@@ -89,9 +110,9 @@ class _ParticipateScreenState extends State<ParticipateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: yWhiteColor,
+      backgroundColor: color.AppColor.yAccentColor,
       appBar: AppBar(
-        title: Text('Formulaire d\'inscription'),
+        title: Text('Formulaire d\'inscription', style: TextStyle(color: color.AppColor.yDarkColor, fontWeight: FontWeight.bold),),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -103,13 +124,19 @@ class _ParticipateScreenState extends State<ParticipateScreen> {
                 width: 180,
                   child: Image.asset(ySplashImage)
               ),
-              Text("Vous pouvez déposer votre candidature ici"),
+              Text("Vous pouvez déposer votre candidature ici / أرسل طلبك هنا",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: color.AppColor.yDarkColor,
+                ),
+              ),
 
-              _buildTextField(_firstNameController, 'Prénom', const Icon(Icons.account_circle)),
+              _buildTextField(_firstNameController, 'Prénom / الاسم الأول', Icons.account_circle),
               SizedBox(height: 15),
-              _buildTextField(_lastNameController, 'Nom', const Icon(Icons.account_circle)),
+              _buildTextField(_lastNameController, 'Nom / الاسم الثاني', Icons.account_circle),
               SizedBox(height: 15),
-              _buildTextField(_phoneController, 'Téléphone', isPhone: true, const Icon(Icons.phone_android_outlined)),
+              _buildTextField(_phoneController, 'Téléphone / رقم الهاتف', isPhone: true, Icons.phone_android_outlined),
               SizedBox(height: 15),
               GestureDetector(
                 onTap: () => _selectBirthDate(context),
@@ -117,22 +144,55 @@ class _ParticipateScreenState extends State<ParticipateScreen> {
                   child: _buildTextField(
                     _birthDateController,
                     'Date de Naissance',
-                      const Icon(Icons.edit_calendar_outlined)
+                      Icons.edit_calendar_outlined
                   ),
                 ),
               ),
               SizedBox(height: 15),
-              _buildTextField(_addressController, 'Adresse Exacte', const Icon(Icons.maps_home_work)),
+              _buildTextField(_addressController, 'Adresse Exacte / العنوان', Icons.maps_home_work),
               SizedBox(height: 15),
-              _buildTextField(_schoolController, 'École', const Icon(Icons.school_rounded)),
+              _buildTextField(_schoolController, 'École / المدرسة', Icons.school_rounded),
               SizedBox(height: 15),
-              _buildTextField(_professorController, 'Professeur', const Icon(Icons.school_sharp)),
+              _buildTextField(_professorController, 'Professeur / المعلم', Icons.school_sharp),
               SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _pickImage,
-                icon: Icon(Icons.upload_file),
-                label: Text('Ajouter Extrait'),
+              _extraitFile!=null ?ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.file(_extraitFile!, height: 200, width: 200, fit: BoxFit.cover,),
+              ): Container(
+                height: 200,
+                width: 200,
+                decoration: BoxDecoration(
+                  border:Border.all(),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: Icon(Icons.image, size: 50,),
+                ),
               ),
+              SizedBox(height: 20),
+              SizedBox(
+                height: 30,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: color.AppColor.yDarkColor,
+                    foregroundColor: color.AppColor.yWhiteColor,
+                  ),
+                  onPressed: _pickImageCamera, 
+                  child: Text("Prendre un photo")
+                ),
+              ), 
+              const SizedBox(height: 20),
+                 SizedBox(
+                height: 30,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: color.AppColor.yDarkColor,
+                    foregroundColor: color.AppColor.yWhiteColor,
+                  ),
+                  onPressed: _pickImage, 
+                  child: Text("Selectionner un fichier/حدد ملفًا")
+                ),
+              ), 
               if (_extraitFile != null) Text('Fichier sélectionné.'),
               SizedBox(height: 30),
               SizedBox(
@@ -162,15 +222,27 @@ class _ParticipateScreenState extends State<ParticipateScreen> {
   // Champ de texte réutilisable
   Widget _buildTextField(
       TextEditingController controller,
-      String label, Icon icon,{
+      String label, IconData icon,{
         bool isPhone = false,
       }) {
     return TextFormField(
       controller: controller,
       keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
       decoration: InputDecoration(
-        prefixIcon: icon,
+        prefixIcon: Icon(icon, color: color.AppColor.yAccentColor),
         labelText: label,
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: color.AppColor.yDarkColor, 
+            width: 2.0
+          ), 
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: color.AppColor.yDarkColor, 
+              width: 1.5
+            ), 
+          ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
         filled: true,
         fillColor: Colors.grey[200],
