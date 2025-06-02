@@ -120,8 +120,8 @@ class AdministrateurAscreen extends StatelessWidget {
                               titre: 'Articles',
                               icons: CupertinoIcons.circle_fill,
                               haveIcon: false,
-                              isActive: menuAdminBloc.menu == 3,
-                              ontap: () => menuAdminBloc.setMenu(3),
+                              isActive: menuAdminBloc.menu == 4,
+                              ontap: () => menuAdminBloc.setMenu(4),
                             ),
                             const Spacer(),
                             ItemMenu(

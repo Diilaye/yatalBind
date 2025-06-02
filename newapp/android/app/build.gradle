@@ -1,0 +1,32 @@
+android {
+    namespace = "sn.yaatalmbinde.app"
+    compileSdk = 33 // Fixe compileSdk à 33
+    ndkVersion = "23.1.7779620" // Fixe ndkVersion à 23.1.7779620
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId = "sn.yaatalmbinde"
+        // Mise à jour de minSdk et targetSdk
+        minSdk = 21 // Exemple : minimum SDK à 21
+        targetSdk = 33 // Exemple : target SDK à 33
+        versionCode = 1
+        versionName = "1.0.0"
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}

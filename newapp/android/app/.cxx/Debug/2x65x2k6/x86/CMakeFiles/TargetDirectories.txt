@@ -1,0 +1,2 @@
+/Users/diikaanedev/Documents/yatalBind/newapp/android/app/.cxx/Debug/2x65x2k6/x86/CMakeFiles/rebuild_cache.dir
+/Users/diikaanedev/Documents/yatalBind/newapp/android/app/.cxx/Debug/2x65x2k6/x86/CMakeFiles/edit_cache.dir
