@@ -19,14 +19,14 @@ class TFadeAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx( () => AnimatedPositioned(
         duration: Duration(milliseconds: durationInMs),
-        top: controller.animate.value ? animatePosition!.topAfter : animatePosition!.topBefore,
-        left: controller.animate.value ?animatePosition!.leftAfter : animatePosition!.leftBefore,
-        bottom: controller.animate.value ?animatePosition!.bottomAfter : animatePosition!.bottomBefore,
-        right: controller.animate.value ?animatePosition!.rightAfter : animatePosition!.rightBefore,
+        top: controller.animate ? animatePosition!.topAfter : animatePosition!.topBefore,
+        left: controller.animate ? animatePosition!.leftAfter : animatePosition!.leftBefore,
+        bottom: controller.animate ? animatePosition!.bottomAfter : animatePosition!.bottomBefore,
+        right: controller.animate ? animatePosition!.rightAfter : animatePosition!.rightBefore,
         child: 
          AnimatedOpacity(
           duration: Duration(milliseconds: durationInMs),
-          opacity: controller.animate.value ? 1:0,
+          opacity: controller.animate ? 1 : 0,
           child: child,
            /**/
          ),  

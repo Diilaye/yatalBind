@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'webview_factory.dart';
+import 'webview_interface.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,24 +12,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late WebViewController controller;
+  late WebViewInterface webViewInterface;
+  
   @override
   void initState() {
     super.initState();
-    controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            // Update loading bar.
-          },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
-          onHttpError: (HttpResponseError error) {},
-          onWebResourceError: (WebResourceError error) {},
-        ),
-      )
-      ..loadRequest(Uri.parse('https://yaatalmbinde.sn/'));
+    webViewInterface = createWebView();
   }
 
   @override
@@ -36,9 +25,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        //appBar: AppBar(title: Text("YaatalMbinde")),
-
-        body: WebViewWidget(controller: controller),
+        body: webViewInterface.buildWebView('https://yaatalmbinde.sn/'),
       ),
     );
   }

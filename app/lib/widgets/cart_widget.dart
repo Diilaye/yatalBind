@@ -1,5 +1,6 @@
 import 'package:app/bloc/youtube/player.dart';
 import 'package:app/utils/colors.dart';
+import 'package:app/widgets/youtube_thumbnail.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -41,7 +42,10 @@ class Cart extends StatelessWidget {
                         MaterialPageRoute(builder: (context)=>Player(videoId: videoId))
                     );
                   },
-                  child: Image.network(YoutubePlayer.getThumbnail(videoId: videoId!))
+                  child: YouTubeThumbnail(
+                    videoId: videoId!,
+                    fit: BoxFit.cover,
+                  ),
               );
             }
         ),
