@@ -1,0 +1,65 @@
+name: 🚀 Deploy All Services
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔑 Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: 🔄 Pull latest code
+        run: |
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "cd ${{ secrets.DEPLOY_PATH }} && \
+            git fetch origin main && \
+            git checkout main && \
+            git pull origin main"
+
+      - name: 🐳 Rebuild and restart services
+        run: |
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "cd ${{ secrets.DEPLOY_PATH }} && \
+            docker-compose down && \
+            docker-compose up -d --build"
+
+      - name: ⏳ Wait for services
+        run: sleep 30
+
+      - name: 🧪 Health checks
+        run: |
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "echo '=== API Health ===' && \
+            curl -sf https://api.yaatalmbindumalxuran.sn/health || echo 'API down' && \
+            echo '' && \
+            echo '=== Dashboard ===' && \
+            curl -sf -I https://dashboard.yaatalmbindumalxuran.sn || echo 'Dashboard down' && \
+            echo '' && \
+            echo '=== Web App ===' && \
+            curl -sf -I https://yaatalmbindumalxuran.sn || echo 'Web App down'"
+
+      - name: ✅ Deployment Success
+        if: success()
+        run: echo "✅ All services deployed successfully!"
+
+      - name: ❌ Deployment Failed
+        if: failure()
+        run: |
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "docker-compose logs --tail=50"
