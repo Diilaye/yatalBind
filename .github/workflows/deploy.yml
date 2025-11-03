@@ -1,12 +1,192 @@
-name: 🚀 Deploy All Services
+name: 🚀 Auto-Build Flutter Web & Deploy
 
 on:
   push:
     branches: [main]
+    paths:
+      - 'newapp/**'
+      - 'dahsboard/**'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME_API: ${{ github.repository }}/api
+  IMAGE_NAME_DASHBOARD: ${{ github.repository }}/dashboard
+  IMAGE_NAME_WEBAPP: ${{ github.repository }}/webapp
+
 jobs:
-  build-and-deploy:
+  # ==========================================
+  # ÉTAPE 1: Builder Flutter Web
+  # ==========================================
+  build-flutter:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔵 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+          channel: 'stable'
+
+      - name: 🚀 Build newapp (v1-ytl)
+        run: |
+          cd newapp
+          flutter clean
+          flutter pub get
+          flutter build web --release --web-renderer=html
+          echo "✅ newapp built successfully"
+
+      - name: 🚀 Build dahsboard (site-web-dashboard)
+        run: |
+          cd dahsboard
+          flutter clean
+          flutter pub get
+          flutter build web --release --web-renderer=html
+          echo "✅ dahsboard built successfully"
+
+      - name: 📦 Prepare outputs
+        run: |
+          # Créer les répertoires de sortie
+          mkdir -p v1-ytl/web
+          mkdir -p site-web-dashboard/web
+          
+          # Copier les builds
+          cp -r newapp/build/web/* v1-ytl/web/
+          cp -r dahsboard/build/web site-web-dashboard/
+          
+          # Vérifier
+          echo "=== v1-ytl/web ==="
+          ls -la v1-ytl/web/ | head -10
+          echo "=== site-web-dashboard/web ==="
+          ls -la site-web-dashboard/web/ | head -10
+
+      - name: 📝 Create build manifest
+        run: |
+          cat > .build-manifest.json << EOF
+          {
+            "version": "$(date +%Y.%m.%d)",
+            "timestamp": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
+            "commit": "${{ github.sha }}",
+            "builds": {
+              "newapp": {
+                "path": "v1-ytl/web",
+                "timestamp": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+              },
+              "dahsboard": {
+                "path": "site-web-dashboard/web",
+                "timestamp": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+              }
+            }
+          }
+          EOF
+          cat .build-manifest.json
+
+      - name: 💾 Commit builds
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add -A
+          git commit -m "🔨 Auto-build Flutter web ($(date +%Y-%m-%d_%H%M%S))" || echo "Nothing to commit"
+          git push
+
+  # ==========================================
+  # ÉTAPE 2: Build & Push Docker Images
+  # ==========================================
+  build-docker:
+    needs: build-flutter
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔑 Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📊 Extract metadata (API)
+        id: meta-api
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_API }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=sha
+            type=raw,value=latest
+
+      - name: 📊 Extract metadata (Dashboard)
+        id: meta-dashboard
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_DASHBOARD }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=sha
+            type=raw,value=latest
+
+      - name: 📊 Extract metadata (WebApp)
+        id: meta-webapp
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_WEBAPP }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=sha
+            type=raw,value=latest
+
+      - name: 🔨 Build and push API
+        uses: docker/build-push-action@v5
+        with:
+          context: ./api
+          push: true
+          tags: ${{ steps.meta-api.outputs.tags }}
+          labels: ${{ steps.meta-api.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: 🔨 Build and push Dashboard
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          dockerfile: dahsboard/Dockerfile
+          push: true
+          tags: ${{ steps.meta-dashboard.outputs.tags }}
+          labels: ${{ steps.meta-dashboard.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: 🔨 Build and push WebApp
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          dockerfile: Dockerfile.webapp
+          push: true
+          tags: ${{ steps.meta-webapp.outputs.tags }}
+          labels: ${{ steps.meta-webapp.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ==========================================
+  # ÉTAPE 3: Deploy to VPS
+  # ==========================================
+  deploy:
+    needs: build-docker
     runs-on: ubuntu-latest
     
     steps:
@@ -20,22 +200,17 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
 
-      - name: 🔄 Pull latest code
+      - name: 🔄 Pull latest code on VPS
         run: |
           ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "cd ${{ secrets.DEPLOY_PATH }} && \
-            git fetch origin main && \
-            git checkout main && \
-            git pull origin main"
+            "cd ${{ secrets.DEPLOY_PATH }} && git pull origin main"
 
-      - name: 🐳 Rebuild and restart services
+      - name: 🐳 Rebuild and restart Docker services
         run: |
           ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "cd ${{ secrets.DEPLOY_PATH }} && \
-            docker-compose down && \
-            docker-compose up -d --build"
+            "cd ${{ secrets.DEPLOY_PATH }} && docker-compose down && docker-compose pull && docker-compose up -d"
 
       - name: ⏳ Wait for services
         run: sleep 30
@@ -45,21 +220,30 @@ jobs:
           ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
             "echo '=== API Health ===' && \
-            curl -sf https://api.yaatalmbindumalxuran.sn/health || echo 'API down' && \
+            curl -sf https://api.yaatalmbindalxurane.sn/health || echo 'API down' && \
             echo '' && \
             echo '=== Dashboard ===' && \
-            curl -sf -I https://dashboard.yaatalmbindumalxuran.sn || echo 'Dashboard down' && \
+            curl -sf -I https://dashboard.yaatalmbindalxurane.sn || echo 'Dashboard down' && \
             echo '' && \
             echo '=== Web App ===' && \
-            curl -sf -I https://yaatalmbindumalxuran.sn || echo 'Web App down'"
+            curl -sf -I https://yaatalmbindalxurane.sn || echo 'Web App down'"
 
-      - name: ✅ Deployment Success
-        if: success()
-        run: echo "✅ All services deployed successfully!"
-
-      - name: ❌ Deployment Failed
-        if: failure()
+      - name: 📊 Get deployment logs
+        if: always()
         run: |
           ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "docker-compose logs --tail=50"
+            "cd ${{ secrets.DEPLOY_PATH }} && docker-compose ps && echo '' && docker-compose logs --tail=50"
+
+      - name: ✅ Deployment Success
+        if: success()
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "Services:"
+          echo "  • API: https://api.yaatalmbindalxurane.sn"
+          echo "  • Dashboard: https://dashboard.yaatalmbindalxurane.sn"
+          echo "  • Web App: https://yaatalmbindalxurane.sn"
+
+      - name: ❌ Deployment Failed
+        if: failure()
+        run: echo "❌ Deployment failed. Check logs above."
