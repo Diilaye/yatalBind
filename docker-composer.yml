@@ -1,17 +1,23 @@
 version: '3.8'
 
 ###############################################
-# Docker Compose Production
-# Approche Hybride: Builds pre-compilés + Docker copy
+# docker-compose.yml
+# Chemin: /home/deploy/yaaatalmbindumalxuran/docker-compose.yml
+# 
+# Structure: yatalBind/ comme sous-dossier
+# - API: yatalBind/api/
+# - Dashboard: yatalBind/dahsboard/
+# - WebApp: yatalBind/v1-ytl/
 ###############################################
 
 services:
   # ==========================================
   # API - Node.js (Port 3000)
+  # Context: yatalBind/api/
   # ==========================================
   api:
     build:
-      context: ./api
+      context: ./yatalBind/api
       dockerfile: Dockerfile
     image: yataalbind/api:latest
     container_name: yaatalmbindumalxuran-api
@@ -28,7 +34,7 @@ services:
       - CORS_ORIGIN=${CORS_ORIGIN}
       - LOG_LEVEL=${LOG_LEVEL:-info}
     volumes:
-      - ./api:/app
+      - ./yatalBind/api:/app
       - /app/node_modules
     restart: unless-stopped
     networks:
@@ -48,11 +54,12 @@ services:
   # ==========================================
   # Dashboard - Nginx (Port 3001)
   # Pre-built Flutter web files
+  # Context: yatalBind/
   # ==========================================
   dashboard:
     build:
-      context: .
-      dockerfile: dashboard/Dockerfile
+      context: ./yatalBind
+      dockerfile: dahsboard/Dockerfile
     image: yataalbind/dashboard:latest
     container_name: yaatalmbindumalxuran-dashboard
     ports:
@@ -77,6 +84,7 @@ services:
   # ==========================================
   # Web App - Node.js (Port 8080 -> 80)
   # Pre-built Flutter web + Node.js
+  # Context: racine du projet
   # ==========================================
   webapp:
     build:
@@ -111,7 +119,7 @@ networks:
     driver: bridge
 
 ###############################################
-# Usage:
+# Usage depuis /home/deploy/yaaatalmbindumalxuran/:
 # docker-compose build          # Build all services
 # docker-compose up -d          # Run all services
 # docker-compose logs -f api    # View logs

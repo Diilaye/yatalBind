@@ -1,18 +1,25 @@
+###############################################
+# FILE: Dockerfile.webapp
+# Chemin: /home/deploy/yaaatalmbindumalxuran/Dockerfile.webapp
+# V1-YTL: Pre-built Flutter web + Node.js
+# Context: racine du projet
+###############################################
+
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files de v1-ytl
-COPY v1-ytl/package*.json ./
+# Copy package files de yatalBind/v1-ytl
+COPY yatalBind/v1-ytl/package*.json ./
 
 # Install dependencies
 RUN npm install --only=production
 
 # Copy app.js
-COPY v1-ytl/app.js ./
+COPY yatalBind/v1-ytl/app.js ./
 
 # Copy pre-built Flutter web files
-COPY v1-ytl/web ./public
+COPY yatalBind/v1-ytl/web ./public
 
 # Create .env if not exists
 RUN echo "NODE_ENV=production" > .env || true
