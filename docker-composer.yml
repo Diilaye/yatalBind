@@ -1,0 +1,119 @@
+version: '3.8'
+
+###############################################
+# Docker Compose Production
+# Approche Hybride: Builds pre-compilés + Docker copy
+###############################################
+
+services:
+  # ==========================================
+  # API - Node.js (Port 3000)
+  # ==========================================
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    image: yataalbind/api:latest
+    container_name: yaatalmbindumalxuran-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - API_URL=${API_URL}
+      - DASHBOARD_URL=${DASHBOARD_URL}
+      - APP_URL=${APP_URL}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    restart: unless-stopped
+    networks:
+      - yaatalmbindumalxuran-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ==========================================
+  # Dashboard - Nginx (Port 3001)
+  # Pre-built Flutter web files
+  # ==========================================
+  dashboard:
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    image: yataalbind/dashboard:latest
+    container_name: yaatalmbindumalxuran-dashboard
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    networks:
+      - yaatalmbindumalxuran-network
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ==========================================
+  # Web App - Node.js (Port 8080 -> 80)
+  # Pre-built Flutter web + Node.js
+  # ==========================================
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile.webapp
+    image: yataalbind/webapp:latest
+    container_name: yaatalmbindumalxuran-webapp
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+      - API_URL=${API_URL}
+    restart: unless-stopped
+    networks:
+      - yaatalmbindumalxuran-network
+    depends_on:
+      - api
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  yaatalmbindumalxuran-network:
+    driver: bridge
+
+###############################################
+# Usage:
+# docker-compose build          # Build all services
+# docker-compose up -d          # Run all services
+# docker-compose logs -f api    # View logs
+# docker-compose down           # Stop all services
+###############################################

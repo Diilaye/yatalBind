@@ -1,33 +1,25 @@
-# =========================================
-# FILE: Dockerfile.webapp
-# Chemin: /home/deploy/yaaatalmbindumalxuran/Dockerfile.webapp
-# 
-# Utilise une image Flutter récente (3.24.0+)
-# =========================================
-
-FROM flutter:latest AS flutter_builder
-
-WORKDIR /build
-
-COPY newapp/ .
-
-RUN flutter pub get
-RUN flutter build web --release --web-renderer=html
-
 FROM node:20-alpine
 
 WORKDIR /app
 
+# Copy package files de v1-ytl
 COPY v1-ytl/package*.json ./
 
-RUN npm ci --only=production
+# Install dependencies
+RUN npm install --only=production
 
+# Copy app.js
 COPY v1-ytl/app.js ./
 
-COPY --from=flutter_builder /build/build/web ./public
+# Copy pre-built Flutter web files
+COPY v1-ytl/web ./public
+
+# Create .env if not exists
+RUN echo "NODE_ENV=production" > .env || true
 
 EXPOSE 80
 
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
 

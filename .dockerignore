@@ -1,0 +1,13 @@
+.git
+.gitignore
+newapp
+dahsboard
+site-web-dashboard
+scripts
+logs
+backups
+.env.local
+*.log
+node_modules
+.DS_Store
+README.md

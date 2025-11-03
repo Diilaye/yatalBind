@@ -1,0 +1,150 @@
+# =========================================
+# .gitignore - Yaaatalmbindumalxuran
+# Approche Hybride: Builds pre-compilés + CI/CD
+# =========================================
+
+# =====================
+# Environment Files
+# =====================
+.env
+.env.local
+.env.*.local
+.env.production.local
+
+# =====================
+# Node.js / npm
+# =====================
+node_modules/
+npm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# =====================
+# Flutter
+# =====================
+# Source files should be committed
+# Only ignore build artifacts
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+*.iml
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Flutter specific build artifacts to ignore
+# BUT keep the web builds in v1-ytl/web and site-web-dashboard/web
+newapp/.dart_tool/
+newapp/.packages
+dahsboard/.dart_tool
+dahsboard/.packages
+
+# =====================
+# Build History (versioning)
+# =====================
+# Keep for rollback capability
+.build-history/
+
+# =====================
+# Logs
+# =====================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =====================
+# Runtime Data
+# =====================
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# =====================
+# Coverage
+# =====================
+coverage/
+.nyc_output
+
+# =====================
+# OS Files
+# =====================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# =====================
+# IDE
+# =====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# =====================
+# Temporary Files
+# =====================
+tmp/
+temp/
+*.tmp
+
+# =====================
+# Docker
+# =====================
+# Keep dockerfiles but ignore build outputs
+Dockerfile.old
+docker-compose.override.yml
+
+# =====================
+# CI/CD
+# =====================
+.github/workflows/*.log
+
+# =====================
+# API Uploads
+# =====================
+api/uploads/
+api/public/uploads/
+
+# =====================
+# Backups
+# =====================
+*.backup
+*.bak
+backups/
+
+# =====================
+# Local Development
+# =====================
+.local/
+.venv/
+venv/
+ENV/
+env/
+
+# =====================
+# IMPORTANT: DO NOT IGNORE
+# =====================
+# These files should be committed:
+# ✅ v1-ytl/web/          (pre-compiled Flutter web)
+# ✅ site-web-dashboard/web/ (pre-compiled Flutter web)
+# ✅ .build-manifest.json    (version history)
+# ✅ Dockerfiles             (all docker config files)
+# ✅ docker-compose.yml      (orchestration)
+# ✅ scripts/                (build scripts)
+# ✅ .github/workflows/      (CI/CD)
