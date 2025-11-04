@@ -10,7 +10,7 @@ FROM nginx:alpine
 COPY site-web-dashboard/web /usr/share/nginx/html
 
 # Copy Nginx config
-COPY dahsboard/nginx.conf /etc/nginx/conf.d/default.conf
+COPY dashboard/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 3001
 

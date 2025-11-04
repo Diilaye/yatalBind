@@ -42,8 +42,8 @@ yarn.lock
 # BUT keep the web builds in v1-ytl/web and site-web-dashboard/web
 newapp/.dart_tool/
 newapp/.packages
-dahsboard/.dart_tool
-dahsboard/.packages
+dashboard/.dart_tool
+dashboard/.packages
 
 # =====================
 # Build History (versioning)

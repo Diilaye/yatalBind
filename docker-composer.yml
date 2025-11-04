@@ -6,7 +6,7 @@ version: '3.8'
 # 
 # Structure: yatalBind/ comme sous-dossier
 # - API: yatalBind/api/
-# - Dashboard: yatalBind/dahsboard/
+# - Dashboard: yatalBind/dashboard/
 # - WebApp: yatalBind/v1-ytl/
 ###############################################
 
@@ -59,7 +59,7 @@ services:
   dashboard:
     build:
       context: ./yatalBind
-      dockerfile: dahsboard/Dockerfile
+      dockerfile: dashboard/Dockerfile
     image: yataalbind/dashboard:latest
     container_name: yaatalmbindumalxuran-dashboard
     ports:
