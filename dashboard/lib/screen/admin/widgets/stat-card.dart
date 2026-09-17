@@ -1,6 +1,6 @@
-import 'package:dashbord/screen/admin/widgets/circular-card.dart';
-import 'package:dashbord/utils/coolors-by-dii.dart';
-import 'package:dashbord/utils/font-familly-dii.dart';
+import 'package:dashboard/screen/admin/widgets/circular-card.dart';
+import 'package:dashboard/utils/coolors-by-dii.dart';
+import 'package:dashboard/utils/font-familly-dii.dart';
 import 'package:flutter/material.dart';
 
 class StatCard extends StatelessWidget {

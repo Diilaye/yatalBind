@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoScreen extends StatefulWidget {
-
-  late String id;
-  VideoScreen({required this.id});
+  final String id;
+  const VideoScreen({super.key, required this.id});
   @override
   _VideoScreenState createState() => _VideoScreenState();
 }
+
 class _VideoScreenState extends State<VideoScreen> {
   late YoutubePlayerController _controller;
   @override
@@ -21,6 +21,7 @@ class _VideoScreenState extends State<VideoScreen> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

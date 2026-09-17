@@ -2,7 +2,7 @@
 
 const connectDB = async () => {
     try {
-        const conn = await require('mongoose').connect(process.env.MONGO_RUI);
+        const conn = await require('mongoose').connect(process.env.MONGODB_URI);
 
 
         console.log("MongoBD : connected ", conn.connections[0].host);

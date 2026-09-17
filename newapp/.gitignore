@@ -46,3 +46,10 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Environment variables file
+.env
+*.env
+
+# VS Code launch configuration (if you have sensitive information in it, otherwise you can keep it in version control)
+.vscode/launch.json

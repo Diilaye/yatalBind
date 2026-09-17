@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/utils/colors.dart' as color;
+import '/utils/colors.dart';
 
 class FormWidget extends StatefulWidget {
   const FormWidget({super.key});
@@ -22,7 +22,7 @@ class _FormWidgetState extends State<FormWidget> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: color.AppColor.yDarkColor,
+                color: yDarkColor,
               ),
             ),
             SizedBox(
@@ -71,12 +71,12 @@ class _FormWidgetState extends State<FormWidget> {
     return TextField(
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: color.AppColor.yAccentColor),
+        prefixIcon: Icon(icon, color: yAccentColor),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: color.AppColor.yDarkColor, width: 2.0),
+          borderSide: BorderSide(color: yDarkColor, width: 2.0),
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: color.AppColor.yDarkColor, width: 1.5),
+          borderSide: BorderSide(color: yDarkColor, width: 1.5),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),

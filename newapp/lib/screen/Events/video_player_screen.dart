@@ -1,39 +1,40 @@
+// lib/screen/video_player_screen.dart
+
 import 'package:flutter/material.dart';
-import '/models/videos_list.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '/utils/colors.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
-  //
-  VideoPlayerScreen({required this.videoId});
+  const VideoPlayerScreen({super.key, required this.videoId});
   final String videoId;
 
   @override
-  _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
+  State<VideoPlayerScreen> createState() => _VideoPlayerScreenState();
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
-  //
   late YoutubePlayerController _controller;
-  late bool _isPlayerReady;
+  bool _isPlayerReady = false;
 
-  get videoId => null;
+  // ❌ SUPPRIMÉ : get videoId => null;  ← c'était le bug critique
 
   @override
   void initState() {
     super.initState();
-    _isPlayerReady = false;
     _controller = YoutubePlayerController(
-      initialVideoId: videoId,
-      flags: YoutubePlayerFlags(
+      initialVideoId: widget.videoId, // ✅ widget.videoId obligatoire
+      flags: const YoutubePlayerFlags(
         mute: false,
         autoPlay: true,
+        enableCaption: false,
+        forceHD: false,
       ),
     )..addListener(_listener);
   }
 
   void _listener() {
     if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
-      //
+      setState(() {});
     }
   }
 
@@ -45,25 +46,41 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   void dispose() {
+    _controller.removeListener(_listener);
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(videoId),
-      ),
-      body: Container(
-        child: YoutubePlayer(
-          controller: _controller,
-          showVideoProgressIndicator: true,
-          onReady: () {
-            print('Player is ready.');
-            _isPlayerReady = true;
-          },
+    // YoutubePlayerBuilder gère correctement le plein écran sur Android
+    return YoutubePlayerBuilder(
+      player: YoutubePlayer(
+        controller: _controller,
+        showVideoProgressIndicator: true,
+        progressIndicatorColor: yGoldColor,
+        progressColors: const ProgressBarColors(
+          playedColor: yGoldColor,
+          handleColor: yGoldLight,
+          bufferedColor: Colors.white24,
+          backgroundColor: Colors.black26,
         ),
+        onReady: () {
+          debugPrint('[VideoPlayer] Prêt : ${widget.videoId}');
+          setState(() => _isPlayerReady = true);
+        },
+        onEnded: (_) => Navigator.of(context).pop(),
+      ),
+      builder: (context, player) => Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text(
+            widget.videoId,
+            style: const TextStyle(fontSize: 13, color: Colors.white70),
+          ),
+        ),
+        body: Center(child: player),
       ),
     );
   }

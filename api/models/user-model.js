@@ -1,50 +1,53 @@
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
 
-const UsrsModels = new Schema({
-
+const UsersModels = new Schema({
     service: {
         type: String,
         enum: ["admin", "super"],
         default: "admin"
     },
-
-   
-   
+    nom: {
+        type: String,
+        trim: true
+    },
+    prenom: {
+        type: String,
+        trim: true
+    },
     email: {
         type: String,
-        require: true,
-        unique: true
+        required: true,
+        unique: true,
+        lowercase: true,
+        trim: true,
+        validate: {
+            validator: function(v) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+            },
+            message: props => `${props.value} n'est pas un email valide!`
+        }
     },
-
     password: {
         type: String,
-        default: ""
+        required: true,
+        minlength: 6
     },
-
-
-
     statusConexion: {
         type: String,
         default: "inactive"
     },
-
     statusOnline: {
         type: String,
         enum: ["on", "off", "del"],
         default: "on"
     },
-
     token: {
-        type: String,
+        type: String
     },
-
-    date: {
-        type: Date,
-        default: Date.now()
+    derniereConnexion: {
+        type: Date
     }
-
 }, {
     toJSON: {
         transform: function (doc, ret) {
@@ -55,8 +58,12 @@ const UsrsModels = new Schema({
             delete ret.__v;
         },
     },
-}, {
     timestamps: true
 });
 
-module.exports = mongoose.model('user-admin', UsrsModels);
+// Index
+// UsersModels.index({ email: 1 });
+UsersModels.index({ service: 1 });
+UsersModels.index({ statusOnline: 1 });
+
+module.exports = mongoose.model('user-admin', UsersModels);

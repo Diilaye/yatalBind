@@ -255,7 +255,7 @@ exports.sendSms = async  (req, res)  => {
 
         const message = messageModel();
 
-        message.titre = "Concours C3s / YMA";
+        message.titre = "Concours C3S Yaatal MBinde";
         message.subTitle = subTitle;
         message.desc = desc;
         message.sender = user._id;

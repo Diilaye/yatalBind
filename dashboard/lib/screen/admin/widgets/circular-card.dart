@@ -1,5 +1,5 @@
-import 'package:dashbord/utils/coolors-by-dii.dart';
-import 'package:dashbord/utils/font-familly-dii.dart';
+import 'package:dashboard/utils/coolors-by-dii.dart';
+import 'package:dashboard/utils/font-familly-dii.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 

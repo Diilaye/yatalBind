@@ -1,28 +1,12 @@
-import '/screen/Home/home_screen.dart';
-import '/screen/nav_bar_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '/screen/nav_bar_screen.dart';
 
-// class FadeInAnimationController extends GetxController{
-
-//   static FadeInAnimationController get find =>Get.find();
-
-//   RxBool animate = false.obs;
-
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     startAnimation();
-//   }
-
-//   Future startAnimation() async{
-//     await Future.delayed(Duration(milliseconds: 500));
-//      animate.value = true;
-//     await Future.delayed(Duration(milliseconds: 5000));
-//     //Navigator.pushReplacement(context, MaterialPageRoute(builder: WelcomeScreen));
-//     Get.to(NavBarScreen());
-//   }
-// }
+// ─────────────────────────────────────────────────────────────────────────────
+//  FadeInAnimationController
+//  NB : Le nouveau SplashScreen gère ses propres animations en interne.
+//  Ce controller est conservé pour la compatibilité avec TFadeAnimation
+//  utilisé ailleurs dans l'app.
+// ─────────────────────────────────────────────────────────────────────────────
 
 class FadeInAnimationController extends GetxController {
   static FadeInAnimationController get find => Get.find();
@@ -31,14 +15,15 @@ class FadeInAnimationController extends GetxController {
 
   @override
   void onInit() {
-    startAnimation();
     super.onInit();
+    startAnimation();
   }
 
-  Future startAnimation() async {
+  Future<void> startAnimation() async {
     await Future.delayed(const Duration(milliseconds: 500));
     animate.value = true;
-    await Future.delayed(const Duration(milliseconds: 5000));
-    Get.to(() => const NavBarScreen()); // Navigation vers NavBarScreen
+    // La durée est alignée sur la séquence du SplashScreen (6s)
+    await Future.delayed(const Duration(milliseconds: 5500));
+    Get.offAll(() => const NavBarScreen());
   }
 }

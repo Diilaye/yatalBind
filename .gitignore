@@ -46,6 +46,31 @@ dashboard/.dart_tool
 dashboard/.packages
 
 # =====================
+# Android / Gradle build outputs
+# =====================
+**/android/**/build/
+**/android/.gradle/
+**/android/local.properties
+*.apk
+*.aab
+*.jks
+*.keystore
+
+# =====================
+# iOS build outputs
+# =====================
+**/ios/Pods/
+**/ios/build/
+**/ios/.symlinks/
+
+# =====================
+# Dart/Flutter compiled artifacts
+# =====================
+*.dill
+*.dill.track.dill
+*.snapshot
+
+# =====================
 # Build History (versioning)
 # =====================
 # Keep for rollback capability

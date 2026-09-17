@@ -1,7 +1,5 @@
-import '/bloc/youtube/player.dart';
 import '/models/photos_list.dart';
-import '/utils/colors.dart' as color;
-import 'package:cached_network_image/cached_network_image.dart';
+import '/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CartPhoto extends StatelessWidget {
@@ -35,7 +33,7 @@ class _GridItem extends StatelessWidget {
       child: InkWell(
         child: GridTile(
             footer: GridTileBar(
-              backgroundColor: color.AppColor.yAccentColor,
+              backgroundColor: yAccentColor,
               title: Text(photo.titre),
             ),
             child: Container(

@@ -1,5 +1,5 @@
-import 'package:dashbord/bloc/sms-bloc.dart';
-import 'package:dashbord/utils/padding-global.dart';
+import 'package:dashboard/bloc/sms-bloc.dart';
+import 'package:dashboard/utils/padding-global.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

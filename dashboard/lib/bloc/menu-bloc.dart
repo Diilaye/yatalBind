@@ -1,79 +1,98 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+
+enum AdminPage {
+  dashboard, // 0 — OverviewScreen
+  candidats, // 1 — CandidatsScreen
+  sms, // 2 — SmsPage  ← était inaccessible avant
+  gallery, // 3
+  homeConfig,
+  evenements, // 4
+  articles, // 5
+  help, // 6
+  settings, // 7
+}
 
 class MenuAdminBloc with ChangeNotifier {
-  int menu = 0;
-  setMenu(int i) {
-    menu = i;
+  // ── Page courante ─────────────────────────────────────────────────────────
+  AdminPage _currentPage = AdminPage.dashboard;
+  AdminPage get currentPage => _currentPage;
+
+  // Compatibilité avec l'ancien code qui lisait bloc.menu (int)
+  int get menu => _currentPage.index;
+
+  void navigate(AdminPage page) {
+    if (_currentPage == page) return;
+    _currentPage = page;
     notifyListeners();
   }
 
+  // Ancien setMenu(int) — conservé pour ne rien casser
+  void setMenu(int i) {
+    if (i >= 0 && i < AdminPage.values.length) {
+      navigate(AdminPage.values[i]);
+    }
+  }
+
+  /// Raccourci depuis CandidatsScreen → bouton "Envoyer SMS"
+  void goToSms() => navigate(AdminPage.sms);
+
+  // ── Sous-menus (INCHANGÉS) ────────────────────────────────────────────────
   int sousMenu = 0;
-  setSousMenu(int i) {
+  void setSousMenu(int i) {
     sousMenu = i;
     notifyListeners();
   }
 
   int addArticle = 0;
-
-  setAddArticle(int i) {
+  void setAddArticle(int i) {
     addArticle = i;
     notifyListeners();
   }
 
   int addEmission = 0;
-
-  setEmission(int i) {
-    print("setEmission");
-    print(i);
+  void setEmission(int i) {
     addEmission = i;
     notifyListeners();
   }
 
   int addPresseEcrite = 0;
-
-  setPresseEcrite(int i) {
+  void setPresseEcrite(int i) {
     addPresseEcrite = i;
     notifyListeners();
   }
 
   int addFlashNews = 0;
-
-  setFlashNews(int i) {
+  void setFlashNews(int i) {
     addFlashNews = i;
     notifyListeners();
   }
 
   int addCategorie = 0;
-
-  setCategorie(int i) {
+  void setCategorie(int i) {
     addCategorie = i;
     notifyListeners();
   }
 
   int addUser = 0;
-
-  setAddUser(int i) {
+  void setAddUser(int i) {
     addUser = i;
     notifyListeners();
   }
 
   int addSouCategorie = 0;
-
-  setSousCategorie(int i) {
+  void setSousCategorie(int i) {
     addSouCategorie = i;
     notifyListeners();
   }
 
   int addTag = 0;
-
-  setTag(int i) {
+  void setTag(int i) {
     addTag = i;
     notifyListeners();
   }
 
   int keyWord = 0;
-
-  setKeyWord(int i) {
+  void setKeyWord(int i) {
     keyWord = i;
     notifyListeners();
   }

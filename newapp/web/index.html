@@ -25,7 +25,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="newapp">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
-  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'">
+  <meta http-equiv="Content-Security-Policy" content="
+  default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:;
+  connect-src 'self' https: wss:;
+  worker-src 'self' blob:;
+">
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoVRDLg0HC14_SWH6XCaQBTYtybJfX4a4&libraries=places" async
   defer></script>
 
@@ -46,6 +50,51 @@
     cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/cmaps/',
     cMapPacked: true,
   }
+  </script>
+  <!-- Pointer event handling for web -->
+  <script>
+    window.addEventListener('load', function() {
+      // Fix for Flutter web pointer events on input elements
+      let activeElement = null;
+      
+      // Track which element is currently active
+      document.addEventListener('pointerdown', function(e) {
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.closest('input') || e.target.closest('textarea'))) {
+          activeElement = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' ? e.target : (e.target.closest('input') || e.target.closest('textarea'));
+          if (activeElement) {
+            activeElement.focus();
+            e.stopPropagation();
+          }
+        }
+      }, true);
+      
+      // Ensure pointer events don't interfere with input focus
+      document.addEventListener('pointermove', function(e) {
+        if (activeElement && e.target !== activeElement) {
+          if (!(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.closest('input') || e.target.closest('textarea'))) {
+            // Only allow if still on an input
+            return;
+          }
+        }
+      }, true);
+      
+      document.addEventListener('pointerup', function(e) {
+        activeElement = null;
+      }, true);
+      
+      // Prevent pointer events on HTML-embedded inputs from bubbling to Flutter
+      const style = document.createElement('style');
+      style.textContent = `
+        input, textarea, [role="textbox"] {
+          pointer-events: auto !important;
+          touch-action: manipulation !important;
+        }
+        gm-map, [role="region"] {
+          pointer-events: auto !important;
+        }
+      `;
+      document.head.appendChild(style);
+    });
   </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>

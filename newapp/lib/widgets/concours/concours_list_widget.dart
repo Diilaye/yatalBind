@@ -1,3 +1,5 @@
+import 'package:yaatal_mbindum/utils/colors.dart';
+
 import '/models/concours_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,6 +35,7 @@ class ConcoursWidget extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 12,
                       fontFamily: 'Poppins',
+                      color: yWhiteColor,
                       fontWeight: FontWeight.bold)),
             ],
           );

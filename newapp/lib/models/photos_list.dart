@@ -1,6 +1,3 @@
-import '/utils/images_string.dart';
-import 'package:flutter/cupertino.dart';
-
 class PhotosList {
   final String titre;
   final String image;

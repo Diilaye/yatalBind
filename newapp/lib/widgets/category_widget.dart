@@ -35,11 +35,12 @@ class CategoryWidget extends StatelessWidget {
                         fit: BoxFit.cover),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Text(categories[index].titre,
-                    style: TextStyle(
+                    style: const TextStyle(
+                        color: Colors.white,
                         fontSize: 12,
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.bold)),
